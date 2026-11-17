@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Signing Together · The party</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F6EEDC;--surface:#FFFBF2;--ink:#3A2A26;--muted:#6E5D55;--line:#CDBFA6;
+  --primary:#A8431F;--primary-pressed:#8F3819;--primary-edge:#6E2A12;
+  --secondary:#3F6B5A;--secondary-pressed:#33584A;--secondary-edge:#284539;
+  --surface-pressed:#EFE4CF;--surface-edge:#B5A487;
+  --sign-tint:#DCE8E1;--sign-tint-pressed:#C6D9CD;
+  --accent:#E6B13A;--slot:#E9DDC4;--stage:#1F1B1A;
+  --r-card:24px;--r-btn:28px;--r-sm:12px;
+  --ease:cubic-bezier(.2,.7,.3,1);
+  --s1:4px;--s2:8px;--s3:12px;--s4:16px;--s6:24px;--s8:32px;--s10:40px;--s12:48px;--s16:64px;
+  --frame:var(--s16);--chrome:var(--s8);--section:var(--s12);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:#2a2321;font-family:"Atkinson Hyperlegible Next",system-ui,sans-serif;color:var(--ink);-webkit-tap-highlight-color:transparent}
+body{display:grid;place-items:center;overflow:hidden}
+#stage{width:1194px;height:834px;position:relative;overflow:hidden;border-radius:28px;background:var(--bg);transform-origin:center;flex:none;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+.screen{position:absolute;inset:0;opacity:0;pointer-events:none;transition:opacity .4s var(--ease)}
+.screen.on{opacity:1;pointer-events:auto}
+button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
+button:focus-visible,.edge:focus-visible{outline:3px solid var(--secondary);outline-offset:3px}
+svg.i{width:24px;height:24px;flex:none;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+.display{font-size:48px;line-height:58px;font-weight:600}
+.title{font-size:36px;line-height:44px;font-weight:600}
+.heading{font-size:28px;line-height:34px;font-weight:600}
+.label{font-size:26px;line-height:32px;font-weight:600}
+.body{font-size:24px;line-height:32px}
+.small{font-size:20px;line-height:28px}
+.muted{color:var(--muted)}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:12px;min-height:80px;min-width:184px;padding:16px 40px;border-radius:var(--r-btn);font-size:26px;line-height:32px;font-weight:600;transition:transform .12s var(--ease),box-shadow .12s var(--ease),background .12s;--edge:var(--surface-edge);box-shadow:0 4px 0 var(--edge)}
+.btn:active,.btn.pressed{transform:translateY(3px);box-shadow:0 1px 0 var(--edge)}
+.btn.primary{background:var(--primary);color:var(--surface);--edge:var(--primary-edge)}
+.btn.primary:active{background:var(--primary-pressed)}
+.btn.secondary{background:var(--surface);border:2px solid var(--line);--edge:var(--surface-edge)}
+.btn.secondary:active{background:var(--surface-pressed)}
+.btn.save{background:var(--sign-tint);border:2px solid var(--secondary);--edge:var(--secondary-edge)}
+.btn.save:active{background:var(--sign-tint-pressed)}
+.btn.saved{background:var(--secondary);color:var(--surface);--edge:var(--secondary-edge)}
+.btn.saved:active{background:var(--secondary-pressed)}
+.btn.full{width:100%}
+.btn.sm{min-height:64px;min-width:0;padding:12px 24px}
+.iconbtn{width:80px;height:80px;border-radius:999px;background:var(--surface);border:2px solid var(--line);display:grid;place-items:center;box-shadow:0 4px 0 var(--surface-edge);transition:transform .12s var(--ease),box-shadow .12s,background .12s}
+.iconbtn:active{transform:translateY(3px);box-shadow:0 1px 0 var(--surface-edge);background:var(--surface-pressed)}
+.iconbtn[aria-pressed="false"]{background:var(--slot)}
+
+.scene{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:opacity .45s var(--ease)}
+.scene.hide{opacity:0}
+.progress{position:absolute;top:calc(var(--chrome) + 16px);left:50%;transform:translateX(-50%);display:flex;gap:var(--s2);padding:0 var(--s4);height:48px;align-items:center;background:var(--surface);border-radius:999px}
+.dot{width:14px;height:14px;border-radius:999px;background:var(--line);transition:background .3s}
+.dot.on{background:var(--primary)}
+.controls{position:absolute;top:var(--chrome);right:calc(88px + var(--s6));display:flex;gap:var(--s4)}
+.caption{position:absolute;bottom:var(--chrome);left:50%;transform:translateX(-50%);width:701px;padding:16px 24px;background:var(--surface);border-radius:var(--r-btn);text-align:center;font-size:26px;line-height:32px;font-weight:600;transition:opacity .3s}
+.caption.off{opacity:0;pointer-events:none}
+.edge{position:absolute;top:0;bottom:0;width:88px;cursor:pointer;overflow:visible}
+.edge.fwd{right:0}.edge.back{left:0}
+.fold{position:absolute;bottom:0;right:0;width:var(--f,24px);height:var(--f,24px);transition:width .22s var(--ease),height .22s var(--ease);pointer-events:none}
+.edge.back .fold{right:auto;left:0;transform:scaleX(-1)}
+.edge:hover .fold,.edge:active .fold,.edge:focus-visible .fold{--f:88px}
+.edge.turning .fold{--f:260px;transition-duration:.28s}
+.fold .under{position:absolute;inset:0;clip-path:polygon(100% 0,100% 100%,0 100%);background:linear-gradient(135deg,#B29F7D 50%,#CFBB99 61%,#E9DBBE 85%,#F5EBD5 100%)}
+.fold .flap{position:absolute;inset:0;filter:drop-shadow(-2px -2px 5px rgba(58,42,38,.28))}
+.fold .flap i{position:absolute;inset:0;clip-path:polygon(0 0,100% 0,0 100%);border-top-left-radius:5px;background:linear-gradient(135deg,#FFFDF5 0%,#F9F4E4 21%,#E5DBC2 39%,#BCAD90 50%)}
+.chip{position:absolute;display:inline-flex;align-items:center;gap:12px;height:64px;padding:0 24px;background:var(--sign-tint);border:2px solid var(--secondary);border-radius:999px;font-size:26px;font-weight:600;box-shadow:0 4px 0 var(--secondary-edge);transition:transform .12s var(--ease),box-shadow .12s,background .12s,opacity .5s}
+.chip:active{transform:translateY(3px);box-shadow:0 1px 0 var(--secondary-edge);background:var(--sign-tint-pressed)}
+
+#sign{background:var(--stage)}
+#sign .bgscene{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+#sign .overlay{position:absolute;inset:0;background:rgba(31,27,26,.72)}
+.player{width:560px;height:520px;border-radius:var(--r-card);background:var(--slot);position:relative;overflow:hidden;display:grid;place-items:center}
+.ph{display:flex;flex-direction:column;align-items:center;gap:16px;color:var(--muted);text-align:center}
+.ph svg.i{width:64px;height:64px;stroke-width:1.5}
+.player.playing .bar{width:100%}
+.bar{position:absolute;left:0;bottom:0;height:8px;width:0;background:var(--primary)}
+.player.playing .bar{transition:width var(--dur,3s) linear}
+.spd{display:inline-flex;align-items:center;gap:12px;height:72px;padding:0 24px;border-radius:var(--r-btn);background:var(--surface);border:2px solid var(--line);font-size:26px;font-weight:600;box-shadow:0 4px 0 var(--surface-edge);transition:transform .12s,box-shadow .12s,background .12s}
+.spd:active{transform:translateY(3px);box-shadow:0 1px 0 var(--surface-edge);background:var(--surface-pressed)}
+.spd[aria-pressed="true"]{background:var(--sign-tint);border-color:var(--secondary);box-shadow:0 4px 0 var(--secondary-edge)}
+.info{display:flex;flex-direction:column;gap:4px}
+.s-watch{position:absolute;left:var(--frame);top:var(--frame);bottom:var(--frame);width:560px;display:flex;flex-direction:column;gap:var(--s4)}
+.s-watch .player{flex:1;height:auto}
+.s-controls{display:flex;gap:16px}
+.s-controls .spd{flex:1 1 auto;justify-content:center;padding:0 var(--s4);white-space:nowrap;font-size:24px}
+.s-watch .btn.save{width:100%}
+.s-learn{position:absolute;left:calc(var(--frame) + 560px + var(--section));right:var(--frame);top:var(--frame);display:flex;flex-direction:column;gap:var(--s4);color:var(--surface)}
+.s-learn .dim{color:#D9CCB4}
+.s-learn .prompt{color:var(--ink);margin-top:var(--s2)}
+.s-next{position:absolute;right:var(--frame);bottom:var(--frame)}
+.prompt{background:var(--bg);border-radius:var(--r-card);padding:24px;display:flex;flex-direction:column;gap:12px}
+.prompt .h{display:flex;align-items:center;gap:12px}
+.step{display:flex;gap:12px;align-items:flex-start;font-size:24px;line-height:32px}
+.num{width:32px;height:32px;border-radius:999px;background:var(--secondary);color:var(--surface);display:grid;place-items:center;font-size:20px;font-weight:600;flex:none}
+
+.badge{position:absolute;left:-16px;top:12px;transform:rotate(6deg);background:var(--primary);color:var(--surface);padding:var(--s1) var(--s4);border-radius:var(--r-sm);font-size:20px;box-shadow:0 3px 0 var(--primary-edge);z-index:2}
+.track{height:10px;background:var(--slot);border-radius:999px;overflow:hidden}
+.track span{display:block;height:100%;background:var(--primary);border-radius:999px}
+.list{position:absolute;right:var(--frame);top:var(--frame);width:640px;display:flex;flex-direction:column;gap:var(--s4)}
+.item{display:flex;align-items:center;gap:16px;padding:16px 24px;background:var(--surface);border:2px solid var(--line);border-radius:var(--r-card)}
+.item .ic{width:56px;height:56px;border-radius:999px;background:var(--sign-tint);display:grid;place-items:center;flex:none}
+.item .thumb{width:104px;height:72px;border-radius:var(--r-sm);object-fit:cover;flex:none}
+.item{padding:var(--s3)}
+.item .t .small{line-height:24px}
+.today{background:var(--surface);border:2px solid var(--line);border-radius:var(--r-card);padding:24px;display:flex;flex-direction:column;gap:8px}
+.today .h{display:flex;gap:12px;align-items:center}
+.card .img{overflow:hidden}.card .img img{width:100%;height:100%;object-fit:cover}
+.card .try{font-size:20px;line-height:26px;border-top:2px dashed var(--line);padding-top:12px}
+.item .t{flex:1}
+.cards{position:absolute;left:var(--frame);top:208px;right:var(--frame);display:grid;grid-template-columns:repeat(3,320px);gap:var(--s8)}
+.card{position:relative;background:var(--surface);border:2px solid var(--line);border-radius:var(--r-card);padding:24px;display:flex;flex-direction:column;gap:12px;text-align:left;box-shadow:0 6px 16px rgba(58,42,38,.08);transition:transform .2s var(--ease)}
+.card:active{scale:.98}
+.card .tape{position:absolute;top:-12px;left:50%;width:96px;height:28px;margin-left:-48px;background:rgba(230,177,58,.8);transform:rotate(-4deg)}
+.card .img{height:120px;border-radius:var(--r-sm);background:var(--slot);display:grid;place-items:center;color:var(--muted)}
+.empty[hidden],#readProg[hidden]{display:none!important}
+.empty{position:absolute;left:var(--frame);top:208px;width:560px;display:flex;flex-direction:column;gap:16px}
+
+.h-top{position:absolute;left:var(--frame);right:var(--frame);top:var(--frame);display:flex;justify-content:space-between;align-items:flex-start}
+.h-top .body{margin-top:var(--s1)}
+.h-actions{display:flex;gap:16px;align-items:center}
+.feature{position:absolute;left:var(--frame);right:var(--frame);top:208px;height:352px;display:flex;background:var(--surface);border:2px solid var(--secondary);border-radius:var(--r-card);box-shadow:0 4px 0 var(--secondary-edge)}
+.cover{position:relative;width:600px;flex:none;padding:var(--s4)}
+.cover img{width:100%;height:100%;object-fit:cover;border-radius:var(--r-sm);display:block}
+.cover .badge{left:0;top:var(--s6)}
+.f-body{flex:1;padding:var(--s6) var(--s8) var(--s6) var(--s4);display:flex;flex-direction:column;gap:var(--s2)}
+#storyCard.progress-on .desc{display:none}
+.f-body .btn{margin-top:auto}
+#readProg{display:flex;flex-direction:column;gap:8px}
+.shelf{position:absolute;left:var(--frame);right:var(--frame);top:calc(208px + 352px + var(--section))}
+.books{display:flex;gap:var(--s6);margin-top:var(--s4);align-items:flex-end;padding:0 var(--s4)}
+.book{width:220px;height:96px;border-radius:var(--r-sm) var(--r-sm) 4px 4px;display:flex;flex-direction:column;justify-content:flex-end;gap:0;padding:var(--s3);text-align:left;position:relative;overflow:hidden}
+.book.on{background:var(--surface);border:2px solid var(--secondary);padding:0}
+.book.on img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.book.on span{position:relative;background:var(--surface);padding:var(--s1) var(--s3);font-weight:600}
+.book.on:active{transform:translateY(2px)}
+.book.soon{border:2px dashed var(--line);background:transparent}
+.plank{height:12px;background:var(--line);border-radius:999px;box-shadow:0 4px 0 var(--surface-edge)}
+.coach{width:640px}
+.coach .row{display:flex;gap:16px;align-items:flex-start}
+.coach .ic{width:56px;height:56px;border-radius:999px;background:var(--sign-tint);display:grid;place-items:center;flex:none}
+
+:root{--spring:cubic-bezier(.34,1.56,.64,1)}
+.scene{animation:drift 18s ease-in-out infinite alternate}
+@keyframes drift{from{transform:scale(1)}to{transform:scale(1.045) translate(-6px,-4px)}}
+#reader{perspective:2600px}
+#leaf{position:absolute;inset:0;display:none;transform-origin:left center;backface-visibility:hidden;will-change:transform}
+#leaf img{width:100%;height:100%;object-fit:cover;display:block}
+#leaf .shade{position:absolute;inset:0;background:linear-gradient(90deg,rgba(58,42,38,0) 40%,rgba(58,42,38,.45) 100%);opacity:0}
+.caption .w{display:inline-block;animation:rise .5s var(--ease) both}
+@keyframes rise{from{opacity:0;translate:0 10px}to{opacity:1;translate:0 0}}
+.chip{animation:chipIn .8s var(--spring) .5s both,float 3.4s ease-in-out 1.4s infinite}
+@keyframes chipIn{from{opacity:0;scale:.6}to{opacity:1;scale:1}}
+@keyframes float{0%,100%{translate:0 0}50%{translate:0 -5px}}
+.chip svg{transform-origin:70% 90%;animation:wave 1.4s ease-in-out 1.3s 2}
+@keyframes wave{0%,100%{rotate:0deg}20%{rotate:-16deg}40%{rotate:12deg}60%{rotate:-8deg}80%{rotate:4deg}}
+#sign.enter .player{animation:popIn .6s var(--spring) both}
+#sign.enter .s-controls,#sign.enter .s-watch .btn{animation:rise .5s var(--ease) .15s both}
+#sign.enter .s-next{animation:slideIn .5s var(--ease) .75s both}
+#sign.enter .s-learn>*{animation:rise .45s var(--ease) both}
+#sign.enter .s-learn>*:nth-child(1){animation-delay:.15s}#sign.enter .s-learn>*:nth-child(2){animation-delay:.2s}#sign.enter .s-learn>*:nth-child(3){animation-delay:.25s}#sign.enter .s-learn>*:nth-child(4){animation-delay:.3s}#sign.enter .s-learn>*:nth-child(5){animation-delay:.35s}#sign.enter .s-learn>*:nth-child(6){animation-delay:.42s}#sign.enter .s-learn>*:nth-child(7){animation-delay:.48s}
+#sign.enter .step{animation:rise .45s var(--ease) both}
+#sign.enter .prompt .h{animation:rise .45s var(--ease) .45s both}#sign.enter .step:nth-child(2){animation-delay:.6s}#sign.enter .step:nth-child(3){animation-delay:.75s}#sign.enter .step:nth-child(4){animation-delay:.9s}
+@keyframes popIn{from{opacity:0;scale:.92}to{opacity:1;scale:1}}
+@keyframes slideIn{from{opacity:0;translate:32px 0}to{opacity:1;translate:0 0}}
+.ph svg.i{animation:float 3s ease-in-out infinite}
+.pop svg{animation:pop .5s var(--spring)}
+@keyframes pop{0%{scale:1}40%{scale:1.45;rotate:-10deg}100%{scale:1;rotate:0deg}}
+.card{animation:drop .6s var(--spring) both}
+@keyframes drop{from{opacity:0;translate:0 -40px;scale:1.06}to{opacity:1;translate:0 0;scale:1}}
+.card .tape{animation:tape .35s var(--ease) both;transform-origin:left center}
+@keyframes tape{from{opacity:0;scale:0 1}to{opacity:1;scale:1 1}}
+.card:hover{translate:0 -4px}
+#end.enter .item{animation:slideIn .45s var(--ease) both}
+#end.enter .today,#end.enter h2,#end.enter > div > p{animation:rise .5s var(--ease) both}
+#home.enter .feature{animation:rise .6s var(--ease) both}
+#home.enter .cover img{animation:popIn .8s var(--spring) .1s both}
+#home.enter .badge{animation:wiggle 1s var(--ease) .7s both}
+@keyframes wiggle{0%{opacity:0;scale:.4;rotate:-20deg}50%{opacity:1;scale:1.12;rotate:12deg}75%{rotate:3deg}100%{opacity:1;scale:1;rotate:6deg}}
+.badge{transform:none;rotate:6deg}
+#home.enter .book{animation:rise .5s var(--ease) both}
+#home.enter .book:nth-child(2){animation-delay:.08s}#home.enter .book:nth-child(3){animation-delay:.16s}#home.enter .book:nth-child(4){animation-delay:.24s}
+.book.on{transition:translate .25s var(--spring)}.book.on:hover{translate:0 -6px}
+.scrim.on .dialog{animation:popIn .45s var(--spring) both}
+.toast.on{animation:popIn .4s var(--spring)}
+.scrim{position:absolute;inset:0;background:rgba(31,27,26,.6);display:grid;place-items:center;opacity:0;pointer-events:none;transition:opacity .3s;z-index:50}
+.scrim.on{opacity:1;pointer-events:auto}
+.dialog{width:560px;background:var(--surface);border-radius:var(--r-card);padding:var(--s10);display:flex;flex-direction:column;gap:var(--s4)}
+.row-btns{display:flex;gap:16px;margin-top:8px}
+.toast{position:absolute;left:50%;top:var(--s12);transform:translate(-50%,-12px);background:var(--ink);color:var(--surface);padding:var(--s3) var(--s6);border-radius:999px;font-size:20px;opacity:0;transition:.3s;z-index:60;pointer-events:none}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div id="stage" role="application" aria-label="Signing Together prototype">
+
+  <section class="screen on" id="home" aria-label="Home">
+    <header class="h-top">
+      <div><h1 class="display">Signing Together</h1><p class="body muted">Short stories to read and sign with your child.</p></div>
+      <div class="h-actions">
+        <button class="iconbtn" id="howBtn" aria-label="How it works"><svg class="i"><use href="#i-help"/></svg></button>
+        <button class="btn secondary" data-go="scrapbook"><svg class="i"><use href="#i-bookmark"/></svg>Your Scrapbook</button>
+      </div>
+    </header>
+    <article class="feature" id="storyCard">
+      <div class="cover"><img src="img/thumb.jpg" alt="The parent and child at a birthday party"><span class="badge" id="badge">New story</span></div>
+      <div class="f-body">
+        <p class="small muted">Story 01</p>
+        <h2 class="display">The party</h2>
+        <p class="small muted">About 2 minutes · 6 signs to try</p>
+        <p class="body desc">A busy party, and a child who needs a quiet moment.</p>
+        <div id="readProg" hidden><div class="track"><span id="readBar"></span></div><p class="small muted" id="readTxt"></p></div>
+        <button class="btn primary full" id="storyBtn"><svg class="i"><use href="#i-book"/></svg><span>Read the story</span></button>
+      </div>
+    </article>
+    <section class="shelf" aria-label="All stories">
+      <p class="label">All stories</p>
+      <div class="books">
+        <button class="book on" id="book1" aria-label="Story 01, The party"><img src="img/thumb.jpg" alt=""><span class="small">01 · The party</span></button>
+        <div class="book soon" aria-label="Story 02, coming soon"><span class="small muted">Story 02</span><span class="small muted">Coming soon</span></div>
+        <div class="book soon" aria-label="Story 03, coming soon"><span class="small muted">Story 03</span><span class="small muted">Coming soon</span></div>
+        <div class="book soon" aria-label="Story 04, coming soon"><span class="small muted">Story 04</span><span class="small muted">Coming soon</span></div>
+      </div>
+      <div class="plank" aria-hidden="true"></div>
+    </section>
+  </section>
+
+  <section class="screen" id="reader" aria-label="Story">
+    <img class="scene" id="sceneA" alt="">
+    <img class="scene hide" id="sceneB" alt="">
+    <div id="leaf" aria-hidden="true"><img alt=""><span class="shade"></span></div>
+    <div class="progress" id="progress" aria-hidden="true"></div>
+    <div class="controls">
+      <button class="iconbtn" id="capBtn" aria-pressed="true" aria-label="Show or hide captions"><svg class="i"><use href="#i-captions"/></svg></button>
+      <button class="iconbtn" id="pauseBtn" aria-label="Pause the story"><svg class="i"><use href="#i-pause"/></svg></button>
+    </div>
+    <div id="chipLayer"></div>
+    <p class="caption" id="caption" aria-live="polite"></p>
+    <button class="edge back" id="backEdge" aria-label="Previous page"><span class="fold"><span class="under"></span><span class="flap"><i></i></span></span></button>
+    <button class="edge fwd" id="fwdEdge" aria-label="Next page"><span class="fold"><span class="under"></span><span class="flap"><i></i></span></span></button>
+  </section>
+
+  <section class="screen" id="sign" aria-label="Sign">
+    <img class="bgscene" id="signBg" alt="">
+    <div class="overlay"></div>
+    <div class="s-watch">
+      <div class="player" id="player">
+        <div class="ph"><svg class="i"><use href="#i-hand"/></svg><p class="label">Sign video</p><p class="small">Placeholder until the approved clip is ready.</p></div>
+        <span class="bar" id="bar"></span>
+      </div>
+      <div class="s-controls" role="group" aria-label="Video controls">
+        <button class="spd" data-speed="slow" aria-pressed="false"><svg class="i"><use href="#i-turtle"/></svg>Slow</button>
+        <button class="spd" data-speed="normal" aria-pressed="true"><svg class="i"><use href="#i-rabbit"/></svg>Normal</button>
+        <button class="spd again" id="playBtn"><svg class="i"><use href="#i-rotate"/></svg>Watch again</button>
+      </div>
+      <button class="btn save" id="saveBtn"></button>
+    </div>
+    <div class="s-learn">
+      <p class="small dim" id="sWho"></p>
+      <h2 class="display" id="sName"></h2>
+      <div class="info"><p class="small dim">Meaning</p><p class="body" id="sMeaning"></p></div>
+      <div class="prompt">
+        <div class="h"><svg class="i"><use href="#i-users"/></svg><p class="label">Try it together</p></div>
+        <div class="step"><span class="num">1</span>Get their attention first.</div>
+        <div class="step"><span class="num">2</span>Sign face to face.</div>
+        <div class="step"><span class="num">3</span>Wait for them to copy you.</div>
+      </div>
+    </div>
+    <button class="btn primary s-next" id="contBtn"></button>
+  </section>
+
+  <section class="screen" id="end" aria-label="End of story">
+    <div style="position:absolute;left:var(--frame);top:var(--frame);width:400px;display:flex;flex-direction:column;gap:var(--s4)">
+      <h2 class="display">The end</h2>
+      <p class="body">Some moments are too much. It is alright to say so.</p>
+      <div class="today"><div class="h"><svg class="i"><use href="#i-sun"/></svg><p class="label">Try one today</p></div><p class="body">Pick one sign and use it at a calm moment, like bath time or a car journey.</p></div>
+    </div>
+    <div style="position:absolute;left:var(--frame);bottom:var(--frame);display:flex;flex-direction:column;gap:var(--s4);align-items:flex-start">
+      <button class="btn save" id="saveAll"></button>
+      <button class="btn primary" data-go="scrapbook" data-from="end"><svg class="i"><use href="#i-right"/></svg>Go to Scrapbook</button>
+      <button class="btn secondary" data-go="home"><svg class="i"><use href="#i-house"/></svg>Back to home</button>
+    </div>
+    <div class="list" id="endList" aria-label="What each sign changed"></div>
+  </section>
+
+  <section class="screen" id="scrapbook" aria-label="Scrapbook">
+    <header class="h-top"><div><h2 class="display">Your Scrapbook</h2><p class="body muted">The party · signs you saved, in story order</p></div>
+      <button class="btn secondary" data-go="home"><svg class="i"><use href="#i-house"/></svg>Home</button></header>
+    <div class="cards" id="cards"></div>
+    <div class="empty" id="emptySb" hidden>
+      <h3 class="heading">No signs saved yet</h3>
+      <p class="body">Read the story and tap Save on a sign you want to keep. It will appear here.</p>
+      <div><button class="btn primary" id="emptyRead"><svg class="i"><use href="#i-book"/></svg>Read the story</button></div>
+    </div>
+  </section>
+
+  <div class="scrim" id="pause" role="dialog" aria-modal="true" aria-labelledby="pzT">
+    <div class="dialog">
+      <h2 class="title" id="pzT">Story paused</h2>
+      <p class="body">Pick up where you left off, or go back to the start. Going to the start loses your place.</p>
+      <div class="row-btns">
+        <button class="btn primary" id="keepReading">Keep reading</button>
+        <button class="btn secondary" id="goStart"><svg class="i"><use href="#i-house"/></svg>Go to start</button>
+      </div>
+    </div>
+  </div>
+  <div class="scrim" id="coach" role="dialog" aria-modal="true" aria-labelledby="coT">
+    <div class="dialog coach">
+      <h2 class="title" id="coT">How it works</h2>
+      <div class="row"><span class="ic"><svg class="i"><use href="#i-book"/></svg></span><p class="body">Read the story together. Tap the edge of the screen to turn the page.</p></div>
+      <div class="row"><span class="ic"><svg class="i"><use href="#i-hand"/></svg></span><p class="body">When a sign appears, tap it to watch it and try it with your child.</p></div>
+      <div class="row"><span class="ic"><svg class="i"><use href="#i-bookmark"/></svg></span><p class="body">Save the signs you like. They stay in your Scrapbook.</p></div>
+      <div class="row-btns"><button class="btn primary" id="coachOk">Got it</button></div>
+    </div>
+  </div>
+  <div class="toast" id="toast" role="status"></div>
+</div>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-captions" viewBox="0 0 24 24"><rect width="18" height="14" x="3" y="5" rx="2"/><path d="M7 15h4M15 15h2M7 11h2M13 11h4"/></symbol>
+  <symbol id="i-pause" viewBox="0 0 24 24"><rect x="14" y="3" width="5" height="18" rx="1"/><rect x="5" y="3" width="5" height="18" rx="1"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><path d="M5 5a2 2 0 0 1 3.008-1.728l11.997 6.998a2 2 0 0 1 .003 3.458l-12 7A2 2 0 0 1 5 19z"/></symbol>
+  <symbol id="i-rotate" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></symbol>
+  <symbol id="i-hand" viewBox="0 0 24 24"><path d="M18 11V6a2 2 0 0 0-2-2a2 2 0 0 0-2 2"/><path d="M14 10V4a2 2 0 0 0-2-2a2 2 0 0 0-2 2v2"/><path d="M10 10.5V6a2 2 0 0 0-2-2a2 2 0 0 0-2 2v8"/><path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"/></symbol>
+  <symbol id="i-turtle" viewBox="0 0 24 24"><path d="m12 10 2 4v3a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1v-3a8 8 0 1 0-16 0v3a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1v-3l2-4h4Z"/><path d="M4.82 7.9 8 10"/><path d="M15.18 7.9 12 10"/><path d="M16.93 10H20a2 2 0 0 1 0 4H2"/></symbol>
+  <symbol id="i-rabbit" viewBox="0 0 24 24"><path d="M13 16a3 3 0 0 1 2.24 5"/><path d="M18 12h.01"/><path d="M18 21h-8a4 4 0 0 1-4-4 7 7 0 0 1 7-7h.2L9.6 6.4a1 1 0 1 1 2.8-2.8L15.8 7h.2c3.3 0 6 2.7 6 6v1a2 2 0 0 1-2 2h-1a3 3 0 0 0-3 3"/><path d="M20 8.54V4a2 2 0 1 0-4 0v3"/><path d="M7.612 12.524a3 3 0 1 0-1.6 4.3"/></symbol>
+  <symbol id="i-right" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></symbol>
+  <symbol id="i-left" viewBox="0 0 24 24"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></symbol>
+  <symbol id="i-bookmark" viewBox="0 0 24 24"><path d="M17 3a2 2 0 0 1 2 2v15a1 1 0 0 1-1.496.868l-4.512-2.578a2 2 0 0 0-1.984 0l-4.512 2.578A1 1 0 0 1 5 20V5a2 2 0 0 1 2-2z"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+  <symbol id="i-house" viewBox="0 0 24 24"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/><path d="M3 10a2 2 0 0 1 .709-1.528l7-6a2 2 0 0 1 2.582 0l7 6A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></symbol>
+  <symbol id="i-book" viewBox="0 0 24 24"><path d="M12 7v14"/><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/></symbol>
+  <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></symbol>
+  <symbol id="i-help" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></symbol>
+  <symbol id="i-users" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><path d="M16 3.128a4 4 0 0 1 0 7.744"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><circle cx="9" cy="7" r="4"/></symbol>
+</svg>
+
+<script>
+const reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
+const TBC = "Waiting for the BSL specialist’s description.";
+const PAGES = [
+  {img:"p01", cap:"So many people. So much noise. So much happening."},
+  {img:"p02", cap:"The child stopped playing. For a moment, they stood still."},
+  {img:"p03", cap:"The parent looked over. Something had changed.", after:"p03b", capAfter:"The parent waved hello, and the child looked up.",
+   sign:{name:"Hello", who:"Parent signs", meaning:"Saying hello, or getting attention.", how:TBC, changed:"The child looked up.", tryIt:"Wave hello before you start talking, so they look first."}, chip:[904,428]},
+  {img:"p04", cap:"The parent knelt down beside the child.", after:"p04b", capAfter:"‘Are you okay?’ the parent signed. Then they waited.",
+   sign:{name:"Are you okay?", who:"Parent signs", meaning:"Asking how someone feels.", how:TBC, changed:"The parent asked, then waited.", tryIt:"Ask it after school, then wait for the answer."}, chip:[546,486]},
+  {img:"p05", cap:"The parent offered somewhere quieter.", after:"p05b", capAfter:"‘Somewhere quiet?’ The child nodded and went with them.",
+   sign:{name:"Quiet", who:"Parent signs", meaning:"Calm, with little or no noise.", how:TBC, changed:"They left the noise together.", tryIt:"Offer it when a room gets loud."}, chip:[685,432]},
+  {img:"p06", cap:"The child turned towards the parent.", after:"p06b", capAfter:"The child signed, ‘It hurts.’ The parent moved closer.",
+   sign:{name:"Pain", who:"Child signs", meaning:"Something hurts.", how:TBC, changed:"The parent understood and moved closer.", tryIt:"Learn it together, so they can tell you when something hurts."}, chip:[593,531]},
+  {img:"p07", cap:"The parent wanted the child to know they understood.", after:"p07b", capAfter:"‘It is noisy,’ the parent signed. The child’s shoulders dropped a little.",
+   sign:{name:"Noisy", who:"Parent signs", meaning:"Making a lot of noise.", how:"Extended index finger makes small circles by the side of the head.", changed:"The child’s shoulders dropped.", tryIt:"Name the noise when you notice it together."}, chip:[515,510]},
+  {img:"p08", cap:"They stayed there a while.", after:"p08b", capAfter:"‘We can wait.’ There was no hurry.",
+   sign:{name:"Wait", who:"Parent signs", meaning:"Stay for a moment. There is no hurry.", how:TBC, changed:"Nobody was in a hurry.", tryIt:"Use it when they need more time."}, chip:[670,402]},
+];
+const SIGNS = PAGES.map((p,i)=>p.sign?{...p.sign,page:i}:null).filter(Boolean);
+const S = {page:0, done:new Set(), saved:new Set(), status:"new", captions:true, signIdx:null, signFrom:"story"};
+const $ = id => document.getElementById(id);
+const ico = n => `<svg class="i"><use href="#i-${n}"/></svg>`;
+
+function fit(){const s=Math.min(innerWidth/1214,innerHeight/854,1);$("stage").style.transform=`scale(${s})`;}
+addEventListener("resize",fit);fit();
+
+PAGES.forEach(p=>{[p.img,p.after].filter(Boolean).forEach(n=>{const im=new Image();im.src=`img/${n}.jpg`;});});
+
+function enter(id){const el=$(id);if(!el)return;el.classList.remove("enter");void el.offsetWidth;el.classList.add("enter");clearTimeout(el._et);el._et=setTimeout(()=>el.classList.remove("enter"),1600);}
+function show(id){document.querySelectorAll(".screen").forEach(s=>s.classList.toggle("on",s.id===id));enter(id);if(id==="home")renderHome();if(id==="end")renderEnd();if(id==="scrapbook")renderScrapbook();}
+let toastT;function toast(m){const t=$("toast");t.textContent=m;t.classList.add("on");clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove("on"),1800);}
+
+function renderHome(){
+  const b=$("storyBtn").querySelector("span"), prog=$("readProg");
+  $("badge").hidden = S.status!=="new";
+  prog.hidden = S.status!=="progress"; $("storyCard").classList.toggle("progress-on",S.status==="progress");
+  if(S.status==="progress"){ $("readBar").style.width=((S.page+1)/8*100)+"%"; $("readTxt").textContent=`Page ${S.page+1} of 8`; }
+  $("storyBtn").querySelector("use").setAttribute("href", S.status==="read"?"#i-rotate":S.status==="progress"?"#i-right":"#i-book");
+  b.textContent = S.status==="new"?"Read the story":S.status==="progress"?"Continue reading":"Read again";
+}
+$("storyBtn").onclick=()=>{ if(S.status!=="progress"){S.page=0;S.done.clear();} S.status="progress"; renderPage(true); show("reader"); };
+
+const dots=$("progress"); for(let i=0;i<8;i++){const d=document.createElement("span");d.className="dot";dots.appendChild(d);}
+let front="sceneA";
+function setScene(src, instant){
+  const a=$(front), b=$(front==="sceneA"?"sceneB":"sceneA");
+  if(instant||a.getAttribute("src")===src){a.src=src;a.classList.remove("hide");b.classList.add("hide");return;}
+  b.src=src; b.onload=null; b.classList.remove("hide"); a.classList.add("hide"); front=b.id;
+}
+function srcFor(i){const p=PAGES[i];return `img/${p.sign&&S.done.has(i)?p.after:p.img}.jpg`;}
+function leafTurn(dir, oldSrc, newSrc){
+  const leaf=$("leaf"), im=leaf.querySelector("img"), sh=leaf.querySelector(".shade");
+  const T="perspective(2600px) rotateY(0deg)", O="perspective(2600px) rotateY(-108deg)";
+  const opt={duration:700,easing:"cubic-bezier(.45,.05,.3,1)"};
+  if(dir>0){ im.src=oldSrc; leaf.style.display="block"; setScene(newSrc,true);
+    leaf.animate([{transform:T},{transform:O}],opt).onfinish=()=>leaf.style.display="none";
+    sh.animate([{opacity:0},{opacity:1}],opt);
+  } else { im.src=newSrc; leaf.style.display="block";
+    leaf.animate([{transform:O},{transform:T}],opt).onfinish=()=>{setScene(newSrc,true);leaf.style.display="none";};
+    sh.animate([{opacity:1},{opacity:0}],opt);
+  }
+}
+function setCaption(t){const c=$("caption");c.setAttribute("aria-label",t);c.innerHTML=t.split(" ").map((w,i)=>`<span class="w" aria-hidden="true" style="animation-delay:${.25+i*.035}s">${w}</span>`).join(" ");}
+function renderPage(instant, dir, oldSrc){
+  const p=PAGES[S.page], after=p.sign&&S.done.has(S.page);
+  const src=`img/${after?p.after:p.img}.jpg`;
+  if(dir && !reduce && oldSrc) leafTurn(dir, oldSrc, src); else setScene(src, instant);
+  setCaption(after?p.capAfter:p.cap);
+  [...dots.children].forEach((d,i)=>d.classList.toggle("on",i===S.page));
+  $("backEdge").hidden = S.page===0;
+  const L=$("chipLayer"); L.innerHTML="";
+  if(p.sign && !after){
+    const c=document.createElement("button"); c.className="chip"; c.style.left=p.chip[0]+"px"; c.style.top=p.chip[1]+"px";
+    c.innerHTML=ico("hand")+p.sign.name; c.setAttribute("aria-label","Open the sign "+p.sign.name);
+    c.onclick=()=>openSign(SIGNS.findIndex(s=>s.page===S.page),"story"); L.appendChild(c);
+  }
+}
+function turn(d){
+  const n=S.page+d;
+  if(n<0) return;
+  if(n>=PAGES.length){ S.status="read"; show("end"); return; }
+  const old=srcFor(S.page); S.page=n; renderPage(false, d, old);
+}
+function flip(btn,d){ if(btn.classList.contains("turning"))return; if(reduce){turn(d);return;} btn.classList.add("turning"); setTimeout(()=>{turn(d);btn.classList.remove("turning");},240); }
+$("fwdEdge").onclick=e=>flip(e.currentTarget,1); $("backEdge").onclick=e=>flip(e.currentTarget,-1);
+$("capBtn").onclick=e=>{S.captions=!S.captions;e.currentTarget.setAttribute("aria-pressed",S.captions);$("caption").classList.toggle("off",!S.captions);};
+$("pauseBtn").onclick=()=>{$("pause").classList.add("on");$("keepReading").focus();};
+$("keepReading").onclick=()=>$("pause").classList.remove("on");
+$("pause").onclick=e=>{if(e.target.id==="pause")$("pause").classList.remove("on");};
+$("goStart").onclick=()=>{$("pause").classList.remove("on");S.page=0;S.done.clear();S.status="new";show("home");};
+
+function openSign(i, from){
+  S.signIdx=i; S.signFrom=from; const s=SIGNS[i], p=PAGES[s.page];
+  $("signBg").src=`img/${p.img}.jpg`;
+  $("sWho").textContent=s.who; $("sName").textContent=s.name; $("sMeaning").textContent=s.meaning; 
+  $("contBtn").innerHTML = from==="story" ? ico("right")+"Continue story" : ico("left")+"Back to Scrapbook";
+  renderSave(); stopVideo(); show("sign"); setTimeout(()=>playVideo(),500);
+}
+function renderSave(){const on=S.saved.has(S.signIdx);const b=$("saveBtn");b.className="btn "+(on?"saved":"save");b.innerHTML=on?ico("check")+"Saved":ico("bookmark")+"Save to Scrapbook";b.setAttribute("aria-pressed",on);}
+$("saveBtn").onclick=()=>{const i=S.signIdx; if(S.saved.has(i)){S.saved.delete(i);toast("Removed from your Scrapbook");}else{S.saved.add(i);toast("Saved to your Scrapbook");} renderSave(); const sb=$("saveBtn"); sb.classList.remove("pop"); void sb.offsetWidth; sb.classList.add("pop");};
+$("contBtn").onclick=()=>{ if(S.signFrom==="story"){ S.done.add(SIGNS[S.signIdx].page); renderPage(true); show("reader"); } else show("scrapbook"); };
+let speed="normal", vidT;
+function stopVideo(){clearTimeout(vidT);const pl=$("player");pl.classList.remove("playing");$("bar").style.width="0";}
+function playVideo(){stopVideo();const pl=$("player"),dur=speed==="slow"?6:3;pl.style.setProperty("--dur",dur+"s");void pl.offsetWidth;pl.classList.add("playing");$("bar").style.width="100%";vidT=setTimeout(()=>{},dur*1000);}
+$("playBtn").onclick=playVideo;
+document.querySelectorAll(".spd").forEach(b=>b.onclick=()=>{speed=b.dataset.speed;document.querySelectorAll(".spd").forEach(x=>x.setAttribute("aria-pressed",x===b));playVideo();});
+
+function renderEnd(){
+  const L=$("endList"); L.innerHTML="";
+  SIGNS.forEach((s,i)=>{const on=S.saved.has(i);const r=document.createElement("div");r.className="item";
+    r.innerHTML=`<img class="thumb" src="img/${PAGES[s.page].after}.jpg" alt=""><div class="t"><p class="label">${s.name}</p><p class="small muted">${s.changed}</p></div>`;
+    const b=document.createElement("button");b.className="btn sm "+(on?"saved":"save");b.innerHTML=on?ico("check")+"Saved":ico("bookmark")+"Save";b.setAttribute("aria-label",(on?"Saved: ":"Save ")+s.name);
+    b.onclick=()=>{on?S.saved.delete(i):S.saved.add(i);renderEnd();const nb=$("endList").children[i].querySelector(".btn");nb.classList.add("pop");};r.appendChild(b);L.appendChild(r);});
+  const all=S.saved.size===SIGNS.length,a=$("saveAll");a.className="btn "+(all?"saved":"save");a.innerHTML=all?ico("check")+"All six saved":ico("bookmark")+"Save all six";
+}
+$("saveAll").onclick=()=>{if(S.saved.size===SIGNS.length)S.saved.clear();else SIGNS.forEach((_,i)=>S.saved.add(i));renderEnd();};
+
+function renderScrapbook(){
+  const C=$("cards"); C.innerHTML=""; const ids=[...S.saved].sort((a,b)=>a-b);
+  $("emptySb").hidden=ids.length>0;
+  const rot=[-2,1.5,-1,2,-1.5,1];
+  ids.forEach((i,k)=>{const s=SIGNS[i];const c=document.createElement("button");c.className="card";c.style.rotate=`${rot[k%6]}deg`; c.style.animationDelay=`${.08+k*.1}s`;
+    c.innerHTML=`<span class="tape"></span><div class="img"><img src="img/${PAGES[s.page].after}.jpg" alt=""></div><p class="heading">${s.name}</p><p class="small muted">${s.who}</p><p class="try"><b>Try it:</b> ${s.tryIt}</p>`;
+    c.setAttribute("aria-label","Open "+s.name);c.onclick=()=>openSign(i,"scrapbook");c.querySelector(".tape").style.animationDelay=`${.45+k*.1}s`; C.appendChild(c);});
+}
+$("book1").onclick=()=>$("storyBtn").click();
+function openCoach(){$("coach").classList.add("on");$("coachOk").focus();}
+function closeCoach(){$("coach").classList.remove("on");try{localStorage.setItem("st-coach","1")}catch(e){}}
+$("howBtn").onclick=openCoach; $("coachOk").onclick=closeCoach; $("coach").onclick=e=>{if(e.target.id==="coach")closeCoach();};
+let seen=false; try{seen=localStorage.getItem("st-coach")==="1"}catch(e){}
+if(!seen) setTimeout(openCoach,600);
+$("emptyRead").onclick=()=>$("storyBtn").click();
+document.querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>show(b.dataset.go));
+
+addEventListener("keydown",e=>{
+  if(e.key==="Escape"&&$("coach").classList.contains("on")){closeCoach();return;}
+  if(!$("reader").classList.contains("on")||$("pause").classList.contains("on")){ if(e.key==="Escape")$("pause").classList.remove("on"); return; }
+  if(e.key==="ArrowRight")flip($("fwdEdge"),1); if(e.key==="ArrowLeft"&&!$("backEdge").hidden)flip($("backEdge"),-1); if(e.key==="Escape")$("pauseBtn").click();
+});
+renderHome();
+</script>
+</body>
+</html>
