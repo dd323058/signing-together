@@ -1,0 +1,77 @@
+/* Signing Together — design tokens
+   Source: Figma "Signing Together — Design system", node 31:563 (Story card).
+   [figma] = value read from Figma variables. [proto] = kept from index.html,
+   not present on this node, so check against the Figma library before relying on it. */
+
+:root{
+  /* ---------- 1. Primitive ---------- */
+  --prim-ink-900:#3A2A26;        /* [figma] color-ink */
+  --prim-ink-600:#6E5D55;        /* [figma] color-text-muted */
+  --prim-cream-50:#FFFBF2;       /* [figma] color-surface, text-on-primary */
+  --prim-cream-100:#F6EEDC;      /* [proto] bg */
+  --prim-cream-200:#E9DDC4;      /* [figma] color-slot */
+  --prim-cream-300:#CDBFA6;      /* [proto] line */
+  --prim-clay-600:#A8431F;       /* [figma] color-primary */
+  --prim-clay-900:#6E2A12;       /* [figma] color-primary-edge */
+  --prim-green-600:#3F6B5A;      /* [figma] color-secondary */
+  --prim-green-900:#284539;      /* [figma] color-secondary-edge */
+
+  --prim-space-4:4px;  --prim-space-8:8px;  --prim-space-16:16px;
+  --prim-space-24:24px; --prim-space-40:40px;
+
+  --prim-radius-12:12px; --prim-radius-32:32px; --prim-radius-999:999px;
+  --prim-border-2:2px;   --prim-edge-4:4px;
+
+  --prim-font:"Atkinson Hyperlegible Next",system-ui,sans-serif;
+  --prim-weight-400:400; --prim-weight-600:600;
+  --prim-size-20:20px; --prim-size-24:24px; --prim-size-26:26px; --prim-size-28:28px;
+  --prim-lh-28:28px;   --prim-lh-32:32px;   --prim-lh-34:34px;
+
+  /* ---------- 2. Semantic ---------- */
+  --color-ink:var(--prim-ink-900);
+  --color-text-muted:var(--prim-ink-600);
+  --color-text-on-primary:var(--prim-cream-50);
+  --color-surface:var(--prim-cream-50);
+  --color-bg:var(--prim-cream-100);
+  --color-slot:var(--prim-cream-200);
+  --color-line:var(--prim-cream-300);
+  --color-primary:var(--prim-clay-600);
+  --color-primary-edge:var(--prim-clay-900);
+  --color-secondary:var(--prim-green-600);
+  --color-secondary-edge:var(--prim-green-900);
+
+  --space-xs:var(--prim-space-4);  --space-sm:var(--prim-space-8);
+  --space-md:var(--prim-space-16); --space-lg:var(--prim-space-24);
+  --space-xl:var(--prim-space-40);
+
+  --radius-small:var(--prim-radius-12);
+  --radius-card:var(--prim-radius-32);
+  --radius-button:var(--prim-radius-999);
+  --radius-full:var(--prim-radius-999);
+  --border-width:var(--prim-border-2);
+  --elevation-edge:var(--prim-edge-4);
+
+  --font-family:var(--prim-font);
+  --font-weight-regular:var(--prim-weight-400);
+  --font-weight-semibold:var(--prim-weight-600);
+  --font-size-small:var(--prim-size-20);   --font-line-height-small:var(--prim-lh-28);
+  --font-size-body:var(--prim-size-24);    --font-line-height-body:var(--prim-lh-32);
+  --font-size-label:var(--prim-size-26);   --font-line-height-label:var(--prim-lh-32);
+  --font-size-heading:var(--prim-size-28); --font-line-height-heading:var(--prim-lh-34);
+
+  /* ---------- 3. Component ---------- */
+  --story-card-bg:var(--color-surface);
+  --story-card-border:var(--border-width) solid var(--color-secondary);
+  --story-card-edge:0 var(--elevation-edge) 0 var(--color-secondary-edge);
+  --story-card-radius:var(--radius-card);
+  --story-card-padding:var(--space-lg);
+  --story-card-gap:var(--space-sm);
+  --story-card-media-bg:var(--color-slot);
+  --story-card-media-radius:var(--radius-small);
+  --story-card-meta-color:var(--color-text-muted);
+
+  --button-primary-bg:var(--color-primary);
+  --button-primary-fg:var(--color-text-on-primary);
+  --button-primary-edge:0 var(--elevation-edge) 0 var(--color-primary-edge);
+  --button-radius:var(--radius-button);
+}

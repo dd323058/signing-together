@@ -3,19 +3,25 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
 <title>Signing Together · The party</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
 <style>
 :root{
-  --bg:#F6EEDC;--surface:#FFFBF2;--ink:#3A2A26;--muted:#6E5D55;--line:#CDBFA6;
-  --primary:#A8431F;--primary-pressed:#8F3819;--primary-edge:#6E2A12;
-  --secondary:#3F6B5A;--secondary-pressed:#33584A;--secondary-edge:#284539;
+  /* Aliases to tokens.css (Figma design system). Names below are legacy, kept so the rules stay unchanged. */
+  --bg:var(--color-bg);--surface:var(--color-surface);--ink:var(--color-ink);--muted:var(--color-text-muted);--line:var(--color-line);
+  --primary:var(--color-primary);--primary-edge:var(--color-primary-edge);
+  --secondary:var(--color-secondary);--secondary-edge:var(--color-secondary-edge);
+  --slot:var(--color-slot);
+  --r-card:var(--radius-card);--r-btn:var(--radius-button);--r-sm:var(--radius-small);
+  /* Not in the Figma Story card node yet: prototype values */
+  --primary-pressed:#8F3819;--secondary-pressed:#33584A;
   --surface-pressed:#EFE4CF;--surface-edge:#B5A487;
   --sign-tint:#DCE8E1;--sign-tint-pressed:#C6D9CD;
-  --accent:#E6B13A;--slot:#E9DDC4;--stage:#1F1B1A;
-  --r-card:24px;--r-btn:28px;--r-sm:12px;
+  --accent:#E6B13A;--stage:#1F1B1A;
   --ease:cubic-bezier(.2,.7,.3,1);
   --s1:4px;--s2:8px;--s3:12px;--s4:16px;--s6:24px;--s8:32px;--s10:40px;--s12:48px;--s16:64px;
   --frame:var(--s16);--chrome:var(--s8);--section:var(--s12);
@@ -24,7 +30,7 @@
 html,body{height:100%;background:#2a2321;font-family:"Atkinson Hyperlegible Next",system-ui,sans-serif;color:var(--ink);-webkit-tap-highlight-color:transparent}
 body{display:grid;place-items:center;overflow:hidden}
 #stage{width:1194px;height:834px;position:relative;overflow:hidden;border-radius:28px;background:var(--bg);transform-origin:center;flex:none;box-shadow:0 20px 60px rgba(0,0,0,.35)}
-.screen{position:absolute;inset:0;opacity:0;pointer-events:none;transition:opacity .4s var(--ease)}
+.screen{position:absolute;inset:0;opacity:0;pointer-events:none;transition:opacity .3s ease-out}
 .screen.on{opacity:1;pointer-events:auto}
 button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
 button:focus-visible,.edge:focus-visible{outline:3px solid var(--secondary);outline-offset:3px}
@@ -34,11 +40,11 @@ svg.i{width:24px;height:24px;flex:none;fill:none;stroke:currentColor;stroke-widt
 .title{font-size:36px;line-height:44px;font-weight:600}
 .heading{font-size:28px;line-height:34px;font-weight:600}
 .label{font-size:26px;line-height:32px;font-weight:600}
-.body{font-size:24px;line-height:32px}
-.small{font-size:20px;line-height:28px}
+.body{font-size:24px;line-height:36px}
+.small{font-size:20px;line-height:30px}
 .muted{color:var(--muted)}
 
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:12px;min-height:80px;min-width:184px;padding:16px 40px;border-radius:var(--r-btn);font-size:26px;line-height:32px;font-weight:600;transition:transform .12s var(--ease),box-shadow .12s var(--ease),background .12s;--edge:var(--surface-edge);box-shadow:0 4px 0 var(--edge)}
+.btn{display:inline-flex;align-items:center;justify-content:center;white-space:nowrap;gap:12px;min-height:80px;min-width:184px;padding:16px 40px;border-radius:var(--r-btn);font-size:26px;line-height:32px;font-weight:600;transition:transform .15s ease-out,box-shadow .15s ease-out,background .15s ease-out;--edge:var(--surface-edge);box-shadow:0 4px 0 var(--edge)}
 .btn:active,.btn.pressed{transform:translateY(3px);box-shadow:0 1px 0 var(--edge)}
 .btn.primary{background:var(--primary);color:var(--surface);--edge:var(--primary-edge)}
 .btn.primary:active{background:var(--primary-pressed)}
@@ -50,28 +56,32 @@ svg.i{width:24px;height:24px;flex:none;fill:none;stroke:currentColor;stroke-widt
 .btn.saved:active{background:var(--secondary-pressed)}
 .btn.full{width:100%}
 .btn.sm{min-height:64px;min-width:0;padding:12px 24px}
-.iconbtn{width:80px;height:80px;border-radius:999px;background:var(--surface);border:2px solid var(--line);display:grid;place-items:center;box-shadow:0 4px 0 var(--surface-edge);transition:transform .12s var(--ease),box-shadow .12s,background .12s}
+.iconbtn{width:80px;height:80px;border-radius:999px;background:var(--surface);border:2px solid var(--line);display:grid;place-items:center;box-shadow:0 4px 0 var(--surface-edge);transition:transform .15s ease-out,box-shadow .15s ease-out,background .15s ease-out}
 .iconbtn:active{transform:translateY(3px);box-shadow:0 1px 0 var(--surface-edge);background:var(--surface-pressed)}
 .iconbtn[aria-pressed="false"]{background:var(--slot)}
+[data-tip]{position:relative}
+[data-tip]::after{content:attr(data-tip);position:absolute;top:calc(100% + 12px);left:50%;translate:-50% -4px;background:var(--ink);color:var(--surface);font-size:20px;line-height:30px;font-weight:400;padding:4px 12px;border-radius:var(--r-sm);white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .15s ease-out,translate .15s ease-out;z-index:5}
+[data-tip]:focus-visible::after{opacity:1;translate:-50% 0}
+@media (hover:hover){[data-tip]:hover::after{opacity:1;translate:-50% 0}}
 
-.scene{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:opacity .45s var(--ease)}
+.scene{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:opacity .3s ease-out}
 .scene.hide{opacity:0}
 .progress{position:absolute;top:calc(var(--chrome) + 16px);left:50%;transform:translateX(-50%);display:flex;gap:var(--s2);padding:0 var(--s4);height:48px;align-items:center;background:var(--surface);border-radius:999px}
 .dot{width:14px;height:14px;border-radius:999px;background:var(--line);transition:background .3s}
 .dot.on{background:var(--primary)}
 .controls{position:absolute;top:var(--chrome);right:calc(88px + var(--s6));display:flex;gap:var(--s4)}
-.caption{position:absolute;bottom:var(--chrome);left:50%;transform:translateX(-50%);width:701px;padding:16px 24px;background:var(--surface);border-radius:var(--r-btn);text-align:center;font-size:26px;line-height:32px;font-weight:600;transition:opacity .3s}
+.caption{position:absolute;bottom:var(--chrome);left:50%;transform:translateX(-50%);width:701px;padding:16px 24px;background:var(--surface);border-radius:var(--r-btn);text-align:center;font-size:26px;line-height:40px;font-weight:600;transition:opacity .3s}
 .caption.off{opacity:0;pointer-events:none}
 .edge{position:absolute;top:0;bottom:0;width:88px;cursor:pointer;overflow:visible}
 .edge.fwd{right:0}.edge.back{left:0}
-.fold{position:absolute;bottom:0;right:0;width:var(--f,24px);height:var(--f,24px);transition:width .22s var(--ease),height .22s var(--ease);pointer-events:none}
-.edge.back .fold{right:auto;left:0;transform:scaleX(-1)}
-.edge:hover .fold,.edge:active .fold,.edge:focus-visible .fold{--f:88px}
-.edge.turning .fold{--f:260px;transition-duration:.28s}
+.fold{position:absolute;bottom:0;right:0;width:260px;height:260px;transform-origin:100% 100%;transform:scale(calc(var(--f,24) / 260));transition:transform .2s ease-out;pointer-events:none}
+.edge.back .fold{right:auto;left:0;transform-origin:0 100%;transform:scaleX(-1) scale(calc(var(--f,24) / 260))}
+.edge:hover .fold,.edge:active .fold,.edge:focus-visible .fold{--f:88}
+.edge.turning .fold{--f:260;transition-duration:.3s}
 .fold .under{position:absolute;inset:0;clip-path:polygon(100% 0,100% 100%,0 100%);background:linear-gradient(135deg,#B29F7D 50%,#CFBB99 61%,#E9DBBE 85%,#F5EBD5 100%)}
-.fold .flap{position:absolute;inset:0;filter:drop-shadow(-2px -2px 5px rgba(58,42,38,.28))}
+.fold .flap{position:absolute;inset:0;filter:drop-shadow(-6px -6px 14px rgba(58,42,38,.22))}
 .fold .flap i{position:absolute;inset:0;clip-path:polygon(0 0,100% 0,0 100%);border-top-left-radius:5px;background:linear-gradient(135deg,#FFFDF5 0%,#F9F4E4 21%,#E5DBC2 39%,#BCAD90 50%)}
-.chip{position:absolute;display:inline-flex;align-items:center;gap:12px;height:64px;padding:0 24px;background:var(--sign-tint);border:2px solid var(--secondary);border-radius:999px;font-size:26px;font-weight:600;box-shadow:0 4px 0 var(--secondary-edge);transition:transform .12s var(--ease),box-shadow .12s,background .12s,opacity .5s}
+.chip{position:absolute;display:inline-flex;align-items:center;gap:12px;height:64px;padding:0 24px;background:var(--sign-tint);border:2px solid var(--secondary);border-radius:999px;font-size:26px;font-weight:600;box-shadow:0 4px 0 var(--secondary-edge);transition:transform .15s ease-out,box-shadow .15s ease-out,background .15s ease-out,opacity .5s}
 .chip:active{transform:translateY(3px);box-shadow:0 1px 0 var(--secondary-edge);background:var(--sign-tint-pressed)}
 
 #sign{background:var(--stage)}
@@ -80,10 +90,10 @@ svg.i{width:24px;height:24px;flex:none;fill:none;stroke:currentColor;stroke-widt
 .player{width:560px;height:520px;border-radius:var(--r-card);background:var(--slot);position:relative;overflow:hidden;display:grid;place-items:center}
 .ph{display:flex;flex-direction:column;align-items:center;gap:16px;color:var(--muted);text-align:center}
 .ph svg.i{width:64px;height:64px;stroke-width:1.5}
-.player.playing .bar{width:100%}
-.bar{position:absolute;left:0;bottom:0;height:8px;width:0;background:var(--primary)}
-.player.playing .bar{transition:width var(--dur,3s) linear}
-.spd{display:inline-flex;align-items:center;gap:12px;height:72px;padding:0 24px;border-radius:var(--r-btn);background:var(--surface);border:2px solid var(--line);font-size:26px;font-weight:600;box-shadow:0 4px 0 var(--surface-edge);transition:transform .12s,box-shadow .12s,background .12s}
+.player.playing .bar{transform:scaleX(1)}
+.bar{position:absolute;left:0;bottom:0;height:8px;width:100%;transform-origin:0 50%;transform:scaleX(0);background:var(--primary)}
+.player.playing .bar{transition:transform var(--dur,3s) linear}
+.spd{display:inline-flex;align-items:center;gap:12px;height:72px;padding:0 24px;border-radius:var(--r-btn);background:var(--surface);border:2px solid var(--line);font-size:26px;font-weight:600;box-shadow:0 4px 0 var(--surface-edge);transition:transform .15s ease-out,box-shadow .15s ease-out,background .15s ease-out}
 .spd:active{transform:translateY(3px);box-shadow:0 1px 0 var(--surface-edge);background:var(--surface-pressed)}
 .spd[aria-pressed="true"]{background:var(--sign-tint);border-color:var(--secondary);box-shadow:0 4px 0 var(--secondary-edge)}
 .info{display:flex;flex-direction:column;gap:4px}
@@ -94,14 +104,15 @@ svg.i{width:24px;height:24px;flex:none;fill:none;stroke:currentColor;stroke-widt
 .s-watch .btn.save{width:100%}
 .s-learn{position:absolute;left:calc(var(--frame) + 560px + var(--section));right:var(--frame);top:var(--frame);display:flex;flex-direction:column;gap:var(--s4);color:var(--surface)}
 .s-learn .dim{color:#D9CCB4}
-.s-learn .prompt{color:var(--ink);margin-top:var(--s2)}
+.s-learn .prompt,.s-learn .today{color:var(--ink);margin-top:var(--s2)}
+.today[hidden]{display:none}
 .s-next{position:absolute;right:var(--frame);bottom:var(--frame)}
 .prompt{background:var(--bg);border-radius:var(--r-card);padding:24px;display:flex;flex-direction:column;gap:12px}
 .prompt .h{display:flex;align-items:center;gap:12px}
-.step{display:flex;gap:12px;align-items:flex-start;font-size:24px;line-height:32px}
+.step{display:flex;gap:12px;align-items:flex-start;font-size:24px;line-height:36px}
 .num{width:32px;height:32px;border-radius:999px;background:var(--secondary);color:var(--surface);display:grid;place-items:center;font-size:20px;font-weight:600;flex:none}
 
-.badge{position:absolute;left:-16px;top:12px;transform:rotate(6deg);background:var(--primary);color:var(--surface);padding:var(--s1) var(--s4);border-radius:var(--r-sm);font-size:20px;box-shadow:0 3px 0 var(--primary-edge);z-index:2}
+.badge{position:absolute;left:-16px;top:12px;background:var(--primary);color:var(--surface);padding:var(--s1) var(--s4);border-radius:var(--r-sm);font-size:20px;box-shadow:0 3px 0 var(--primary-edge);z-index:2}
 .track{height:10px;background:var(--slot);border-radius:999px;overflow:hidden}
 .track span{display:block;height:100%;background:var(--primary);border-radius:999px}
 .list{position:absolute;right:var(--frame);top:var(--frame);width:640px;display:flex;flex-direction:column;gap:var(--s4)}
@@ -113,36 +124,23 @@ svg.i{width:24px;height:24px;flex:none;fill:none;stroke:currentColor;stroke-widt
 .today{background:var(--surface);border:2px solid var(--line);border-radius:var(--r-card);padding:24px;display:flex;flex-direction:column;gap:8px}
 .today .h{display:flex;gap:12px;align-items:center}
 .card .img{overflow:hidden}.card .img img{width:100%;height:100%;object-fit:cover}
-.card .try{font-size:20px;line-height:26px;border-top:2px dashed var(--line);padding-top:12px}
+.card .try{font-size:20px;line-height:30px;border-top:2px dashed var(--line);padding-top:12px}
 .item .t{flex:1}
 .cards{position:absolute;left:var(--frame);top:208px;right:var(--frame);display:grid;grid-template-columns:repeat(3,320px);gap:var(--s8)}
-.card{position:relative;background:var(--surface);border:2px solid var(--line);border-radius:var(--r-card);padding:24px;display:flex;flex-direction:column;gap:12px;text-align:left;box-shadow:0 6px 16px rgba(58,42,38,.08);transition:transform .2s var(--ease)}
+.card{position:relative;background:var(--surface);border:2px solid var(--line);border-radius:var(--r-card);padding:24px;display:flex;flex-direction:column;gap:12px;text-align:left;box-shadow:0 4px 16px rgba(58,42,38,.06);transition:transform .2s var(--ease)}
 .card:active{scale:.98}
 .card .tape{position:absolute;top:-12px;left:50%;width:96px;height:28px;margin-left:-48px;background:rgba(230,177,58,.8);transform:rotate(-4deg)}
-.card .img{height:120px;border-radius:var(--r-sm);background:var(--slot);display:grid;place-items:center;color:var(--muted)}
+.card .img{height:120px;flex:none;border-radius:var(--r-sm);background:var(--slot);display:grid;place-items:center;color:var(--muted)}
 .empty[hidden],#readProg[hidden]{display:none!important}
 .empty{position:absolute;left:var(--frame);top:208px;width:560px;display:flex;flex-direction:column;gap:16px}
 
 .h-top{position:absolute;left:var(--frame);right:var(--frame);top:var(--frame);display:flex;justify-content:space-between;align-items:flex-start}
 .h-top .body{margin-top:var(--s1)}
 .h-actions{display:flex;gap:16px;align-items:center}
-.feature{position:absolute;left:var(--frame);right:var(--frame);top:208px;height:352px;display:flex;background:var(--surface);border:2px solid var(--secondary);border-radius:var(--r-card);box-shadow:0 4px 0 var(--secondary-edge)}
-.cover{position:relative;width:600px;flex:none;padding:var(--s4)}
-.cover img{width:100%;height:100%;object-fit:cover;border-radius:var(--r-sm);display:block}
-.cover .badge{left:0;top:var(--s6)}
 .f-body{flex:1;padding:var(--s6) var(--s8) var(--s6) var(--s4);display:flex;flex-direction:column;gap:var(--s2)}
 #storyCard.progress-on .desc{display:none}
 .f-body .btn{margin-top:auto}
 #readProg{display:flex;flex-direction:column;gap:8px}
-.shelf{position:absolute;left:var(--frame);right:var(--frame);top:calc(208px + 352px + var(--section))}
-.books{display:flex;gap:var(--s6);margin-top:var(--s4);align-items:flex-end;padding:0 var(--s4)}
-.book{width:220px;height:96px;border-radius:var(--r-sm) var(--r-sm) 4px 4px;display:flex;flex-direction:column;justify-content:flex-end;gap:0;padding:var(--s3);text-align:left;position:relative;overflow:hidden}
-.book.on{background:var(--surface);border:2px solid var(--secondary);padding:0}
-.book.on img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-.book.on span{position:relative;background:var(--surface);padding:var(--s1) var(--s3);font-weight:600}
-.book.on:active{transform:translateY(2px)}
-.book.soon{border:2px dashed var(--line);background:transparent}
-.plank{height:12px;background:var(--line);border-radius:999px;box-shadow:0 4px 0 var(--surface-edge)}
 .coach{width:640px}
 .coach .row{display:flex;gap:16px;align-items:flex-start}
 .coach .ic{width:56px;height:56px;border-radius:999px;background:var(--sign-tint);display:grid;place-items:center;flex:none}
@@ -154,49 +152,81 @@ svg.i{width:24px;height:24px;flex:none;fill:none;stroke:currentColor;stroke-widt
 #leaf{position:absolute;inset:0;display:none;transform-origin:left center;backface-visibility:hidden;will-change:transform}
 #leaf img{width:100%;height:100%;object-fit:cover;display:block}
 #leaf .shade{position:absolute;inset:0;background:linear-gradient(90deg,rgba(58,42,38,0) 40%,rgba(58,42,38,.45) 100%);opacity:0}
-.caption .w{display:inline-block;animation:rise .5s var(--ease) both}
-@keyframes rise{from{opacity:0;translate:0 10px}to{opacity:1;translate:0 0}}
-.chip{animation:chipIn .8s var(--spring) .5s both,float 3.4s ease-in-out 1.4s infinite}
-@keyframes chipIn{from{opacity:0;scale:.6}to{opacity:1;scale:1}}
+.caption .w{display:inline-block;animation:rise .3s ease-out both}
+@keyframes rise{from{opacity:0;translate:0 8px}to{opacity:1;translate:0 0}}
+.chip{animation:chipIn .3s ease-out .3s both}
+@keyframes chipIn{from{opacity:0;scale:.96}to{opacity:1;scale:1}}
 @keyframes float{0%,100%{translate:0 0}50%{translate:0 -5px}}
-.chip svg{transform-origin:70% 90%;animation:wave 1.4s ease-in-out 1.3s 2}
 @keyframes wave{0%,100%{rotate:0deg}20%{rotate:-16deg}40%{rotate:12deg}60%{rotate:-8deg}80%{rotate:4deg}}
-#sign.enter .player{animation:popIn .6s var(--spring) both}
-#sign.enter .s-controls,#sign.enter .s-watch .btn{animation:rise .5s var(--ease) .15s both}
-#sign.enter .s-next{animation:slideIn .5s var(--ease) .75s both}
-#sign.enter .s-learn>*{animation:rise .45s var(--ease) both}
-#sign.enter .s-learn>*:nth-child(1){animation-delay:.15s}#sign.enter .s-learn>*:nth-child(2){animation-delay:.2s}#sign.enter .s-learn>*:nth-child(3){animation-delay:.25s}#sign.enter .s-learn>*:nth-child(4){animation-delay:.3s}#sign.enter .s-learn>*:nth-child(5){animation-delay:.35s}#sign.enter .s-learn>*:nth-child(6){animation-delay:.42s}#sign.enter .s-learn>*:nth-child(7){animation-delay:.48s}
-#sign.enter .step{animation:rise .45s var(--ease) both}
-#sign.enter .prompt .h{animation:rise .45s var(--ease) .45s both}#sign.enter .step:nth-child(2){animation-delay:.6s}#sign.enter .step:nth-child(3){animation-delay:.75s}#sign.enter .step:nth-child(4){animation-delay:.9s}
-@keyframes popIn{from{opacity:0;scale:.92}to{opacity:1;scale:1}}
-@keyframes slideIn{from{opacity:0;translate:32px 0}to{opacity:1;translate:0 0}}
-.ph svg.i{animation:float 3s ease-in-out infinite}
-.pop svg{animation:pop .5s var(--spring)}
-@keyframes pop{0%{scale:1}40%{scale:1.45;rotate:-10deg}100%{scale:1;rotate:0deg}}
-.card{animation:drop .6s var(--spring) both}
-@keyframes drop{from{opacity:0;translate:0 -40px;scale:1.06}to{opacity:1;translate:0 0;scale:1}}
-.card .tape{animation:tape .35s var(--ease) both;transform-origin:left center}
+#sign.enter .player{animation:popIn .3s ease-out both}
+#sign.enter .s-controls,#sign.enter .s-watch .btn{animation:rise .3s ease-out .03s both}
+#sign.enter .s-next{animation:rise .3s ease-out .2s both}
+#sign.enter .s-learn>*{animation:rise .3s ease-out both}
+#sign.enter .s-learn>*:nth-child(2){animation-delay:.03s}#sign.enter .s-learn>*:nth-child(3){animation-delay:.06s}#sign.enter .s-learn>*:nth-child(4){animation-delay:.09s}#sign.enter .s-learn>*:nth-child(5){animation-delay:.12s}
+#sign.enter .step{animation:rise .3s ease-out both}
+#sign.enter .step:nth-child(2){animation-delay:.15s}#sign.enter .step:nth-child(3){animation-delay:.18s}#sign.enter .step:nth-child(4){animation-delay:.21s}
+@keyframes popIn{from{opacity:0;scale:.98}to{opacity:1;scale:1}}
+@keyframes slideIn{from{opacity:0;translate:16px 0}to{opacity:1;translate:0 0}}
+.pop svg{animation:pop .3s ease-out}
+@keyframes pop{0%{scale:1}50%{scale:1.25}100%{scale:1}}
+.card{animation:drop .3s ease-out both}
+@keyframes drop{from{opacity:0;translate:0 -16px}to{opacity:1;translate:0 0}}
+.card .tape{animation:tape .3s ease-out both;transform-origin:left center}
 @keyframes tape{from{opacity:0;scale:0 1}to{opacity:1;scale:1 1}}
-.card:hover{translate:0 -4px}
-#end.enter .item{animation:slideIn .45s var(--ease) both}
-#end.enter .today,#end.enter h2,#end.enter > div > p{animation:rise .5s var(--ease) both}
-#home.enter .feature{animation:rise .6s var(--ease) both}
-#home.enter .cover img{animation:popIn .8s var(--spring) .1s both}
-#home.enter .badge{animation:wiggle 1s var(--ease) .7s both}
-@keyframes wiggle{0%{opacity:0;scale:.4;rotate:-20deg}50%{opacity:1;scale:1.12;rotate:12deg}75%{rotate:3deg}100%{opacity:1;scale:1;rotate:6deg}}
-.badge{transform:none;rotate:6deg}
-#home.enter .book{animation:rise .5s var(--ease) both}
-#home.enter .book:nth-child(2){animation-delay:.08s}#home.enter .book:nth-child(3){animation-delay:.16s}#home.enter .book:nth-child(4){animation-delay:.24s}
-.book.on{transition:translate .25s var(--spring)}.book.on:hover{translate:0 -6px}
-.scrim.on .dialog{animation:popIn .45s var(--spring) both}
-.toast.on{animation:popIn .4s var(--spring)}
-.scrim{position:absolute;inset:0;background:rgba(31,27,26,.6);display:grid;place-items:center;opacity:0;pointer-events:none;transition:opacity .3s;z-index:50}
+.card{transition:translate .2s ease-out}@media (hover:hover){.card:hover{translate:0 -4px}}
+#end.enter .item{animation:slideIn .3s ease-out both}#end.enter .item:nth-child(2){animation-delay:.03s}#end.enter .item:nth-child(3){animation-delay:.06s}#end.enter .item:nth-child(4){animation-delay:.09s}#end.enter .item:nth-child(5){animation-delay:.12s}#end.enter .item:nth-child(6){animation-delay:.15s}
+#end.enter .today,#end.enter h2,#end.enter > div > p{animation:rise .3s ease-out both}
+#home.enter .badge{animation:badgeIn .3s ease-out .2s both}
+@keyframes badgeIn{from{opacity:0;scale:.9}to{opacity:1;scale:1}}
+.badge{transform:none;rotate:-6deg}
+
+.scrim.on .dialog{animation:popIn .2s ease-out both}
+
+.scrim{position:absolute;inset:0;background:rgba(31,27,26,.6);display:grid;place-items:center;opacity:0;pointer-events:none;transition:opacity .2s ease-out;z-index:50}
 .scrim.on{opacity:1;pointer-events:auto}
 .dialog{width:560px;background:var(--surface);border-radius:var(--r-card);padding:var(--s10);display:flex;flex-direction:column;gap:var(--s4)}
 .row-btns{display:flex;gap:16px;margin-top:8px}
-.toast{position:absolute;left:50%;top:var(--s12);transform:translate(-50%,-12px);background:var(--ink);color:var(--surface);padding:var(--s3) var(--s6);border-radius:999px;font-size:20px;opacity:0;transition:.3s;z-index:60;pointer-events:none}
+.row-btns .btn{flex:1 1 0;min-width:0;padding:var(--s4) var(--s6)}
+.toast{position:absolute;left:50%;top:var(--s12);transform:translate(-50%,-12px);background:var(--ink);color:var(--surface);padding:var(--s3) var(--s6);border-radius:999px;font-size:20px;opacity:0;transition:opacity .3s ease-out,transform .3s ease-out;z-index:60;pointer-events:none}
 .toast.on{opacity:1;transform:translate(-50%,0)}
-@media (prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;animation:none!important}}
+.floor{position:absolute;left:0;right:0;top:738px;bottom:0;background:var(--surface-pressed)}
+.plank{position:absolute;left:0;right:0;top:738px;height:16px;background:#C9A57A;box-shadow:0 6px 0 #9C7A52}
+.fbook{position:absolute;left:var(--frame);bottom:96px;width:400px;height:500px}
+.fpages{position:absolute;left:12px;top:8px;right:-10px;bottom:0;border-radius:8px 22px 22px 8px;background:repeating-linear-gradient(180deg,#FFFBF2 0 3px,#DCCFB4 3px 4px)}
+.fcover{position:absolute;inset:0;display:flex;flex-direction:column;border-radius:8px 20px 20px 8px;overflow:hidden;background:var(--surface);border:3px solid var(--secondary)}
+.fart{flex:1;min-height:0;display:block;padding:0}
+.fart img{width:100%;height:100%;object-fit:cover;object-position:18% 50%;display:block}
+.fplate{padding:var(--s4) var(--s6) var(--s4) calc(var(--s6) + 20px);display:flex;flex-direction:column;gap:var(--s2);border-top:3px solid var(--secondary)}
+.fspine{position:absolute;left:0;top:0;bottom:0;width:20px;background:var(--secondary);box-shadow:inset -4px 0 0 var(--secondary-edge)}
+.fbook .badge{left:auto;right:-12px;top:20px;rotate:4deg}
+.sbook{position:absolute;bottom:96px;width:184px;border-radius:6px 16px 16px 6px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:var(--s2);color:var(--surface);text-align:center;box-shadow:inset 14px 0 0 rgba(0,0,0,.14)}
+.sbook::before{content:"";position:absolute;left:26px;top:12px;right:12px;bottom:12px;border:2px solid rgba(255,251,242,.45);border-radius:4px 10px 10px 4px}
+.sbook svg.i{width:40px;height:40px;stroke-width:1.5}
+.sbook .small{opacity:.9}
+.sbook.c2{left:512px;height:290px;background:#3F6B5A}
+.sbook.c3{left:720px;height:262px;background:#8F3819}
+.sbook.c4{left:928px;height:304px;background:#5A4A44}
+.buddy{display:flex;align-items:center;gap:var(--s6)}
+.avatar{width:120px;height:120px;border-radius:999px;object-fit:cover;border:4px solid var(--surface);box-shadow:0 4px 0 var(--surface-edge);flex:none}
+.bubble{position:relative;background:var(--surface);border:2px solid var(--line);border-radius:var(--r-card);padding:var(--s4) var(--s6);color:var(--ink)}
+.bubble::after{content:"";position:absolute;left:-10px;top:50%;margin-top:-8px;width:16px;height:16px;background:var(--surface);border-left:2px solid var(--line);border-bottom:2px solid var(--line);rotate:45deg}
+.buddy.home{position:absolute;left:512px;right:var(--frame);top:224px}
+.buddy.end .avatar{width:96px;height:96px}
+.buddy.end .bubble{max-width:340px;padding:var(--s3) var(--s4)}
+.tiles{position:absolute;left:var(--frame);right:var(--frame);top:208px;bottom:176px;display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(2,1fr);gap:var(--s6)}
+.tile{position:relative;border-radius:var(--r-card);overflow:hidden;border:3px solid var(--surface);box-shadow:0 4px 0 var(--surface-edge);background:var(--slot)}
+.tile.saved{border-color:var(--secondary);box-shadow:0 4px 0 var(--secondary-edge)}
+.tile img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.tile .n{position:absolute;left:var(--s3);top:var(--s3);width:40px;height:40px;border-radius:999px;background:var(--surface);color:var(--ink);display:grid;place-items:center;font-size:20px;font-weight:600}
+.tile .name{position:absolute;left:var(--s3);bottom:var(--s3);background:var(--surface);border-radius:999px;padding:var(--s2) var(--s4);font-size:24px;line-height:32px;font-weight:600;white-space:nowrap}
+.tile .btn{position:absolute;right:var(--s3);bottom:var(--s3);min-height:48px;min-width:0;padding:var(--s2) var(--s3);font-size:20px;line-height:30px;gap:var(--s2)}
+.end-actions{position:absolute;left:var(--frame);right:var(--frame);bottom:var(--frame);display:flex;justify-content:space-between;align-items:center}
+.end-actions .row{display:flex;gap:var(--s4)}
+#home.enter .fbook{animation:popIn .3s ease-out both}
+#home.enter .sbook,#home.enter .buddy{animation:rise .3s ease-out both}
+#home.enter .sbook.c3{animation-delay:.03s}#home.enter .sbook.c4{animation-delay:.06s}#home.enter .buddy{animation-delay:.15s}
+#end.enter .tile{animation:rise .3s ease-out both}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{transition:opacity .15s linear!important;animation:none!important}.fold{transition:none!important}}
 </style>
 </head>
 <body>
@@ -206,31 +236,30 @@ svg.i{width:24px;height:24px;flex:none;fill:none;stroke:currentColor;stroke-widt
     <header class="h-top">
       <div><h1 class="display">Signing Together</h1><p class="body muted">Short stories to read and sign with your child.</p></div>
       <div class="h-actions">
-        <button class="iconbtn" id="howBtn" aria-label="How it works"><svg class="i"><use href="#i-help"/></svg></button>
-        <button class="btn secondary" data-go="scrapbook"><svg class="i"><use href="#i-bookmark"/></svg>Your Scrapbook</button>
+        <button class="iconbtn" id="howBtn" aria-label="Show how it works" data-tip="Show how it works"><svg class="i"><use href="#i-help"/></svg></button>
+        <button class="btn secondary" data-go="scrapbook"><svg class="i"><use href="#i-bookmark"/></svg>Open Scrapbook</button>
       </div>
     </header>
-    <article class="feature" id="storyCard">
-      <div class="cover"><img src="img/thumb.jpg" alt="The parent and child at a birthday party"><span class="badge" id="badge">New story</span></div>
-      <div class="f-body">
-        <p class="small muted">Story 01</p>
-        <h2 class="display">The party</h2>
-        <p class="small muted">About 2 minutes · 6 signs to try</p>
-        <p class="body desc">A busy party, and a child who needs a quiet moment.</p>
-        <div id="readProg" hidden><div class="track"><span id="readBar"></span></div><p class="small muted" id="readTxt"></p></div>
-        <button class="btn primary full" id="storyBtn"><svg class="i"><use href="#i-book"/></svg><span>Read the story</span></button>
+    <div class="floor" aria-hidden="true"></div>
+    <div class="plank" aria-hidden="true"></div>
+    <article class="fbook" id="storyCard">
+      <span class="fpages" aria-hidden="true"></span>
+      <div class="fcover">
+        <button class="fart" id="book1" aria-label="Open story 01, The party"><img src="img/thumb.jpg" alt=""></button>
+        <div class="fplate">
+          <h2 class="title">The party</h2>
+          <p class="small muted desc">Story 01 · 2 minutes · 6 signs</p>
+          <div id="readProg" hidden><div class="track"><span id="readBar"></span></div><p class="small muted" id="readTxt"></p></div>
+          <button class="btn primary full" id="storyBtn"><svg class="i"><use href="#i-book"/></svg><span>Read the story</span></button>
+        </div>
+        <span class="fspine" aria-hidden="true"></span>
       </div>
+      <span class="badge" id="badge">New story</span>
     </article>
-    <section class="shelf" aria-label="All stories">
-      <p class="label">All stories</p>
-      <div class="books">
-        <button class="book on" id="book1" aria-label="Story 01, The party"><img src="img/thumb.jpg" alt=""><span class="small">01 · The party</span></button>
-        <div class="book soon" aria-label="Story 02, coming soon"><span class="small muted">Story 02</span><span class="small muted">Coming soon</span></div>
-        <div class="book soon" aria-label="Story 03, coming soon"><span class="small muted">Story 03</span><span class="small muted">Coming soon</span></div>
-        <div class="book soon" aria-label="Story 04, coming soon"><span class="small muted">Story 04</span><span class="small muted">Coming soon</span></div>
-      </div>
-      <div class="plank" aria-hidden="true"></div>
-    </section>
+    <div class="buddy home"><img class="avatar" src="img/av-child.jpg" alt=""><p class="bubble body">A busy party, and a child who needs a quiet moment. Shall we read it together?</p></div>
+    <div class="sbook c2" aria-label="Story 02, coming soon"><svg class="i"><use href="#i-book"/></svg><p class="label">Story 02</p><p class="small">Coming soon</p></div>
+    <div class="sbook c3" aria-label="Story 03, coming soon"><svg class="i"><use href="#i-book"/></svg><p class="label">Story 03</p><p class="small">Coming soon</p></div>
+    <div class="sbook c4" aria-label="Story 04, coming soon"><svg class="i"><use href="#i-book"/></svg><p class="label">Story 04</p><p class="small">Coming soon</p></div>
   </section>
 
   <section class="screen" id="reader" aria-label="Story">
@@ -239,8 +268,8 @@ svg.i{width:24px;height:24px;flex:none;fill:none;stroke:currentColor;stroke-widt
     <div id="leaf" aria-hidden="true"><img alt=""><span class="shade"></span></div>
     <div class="progress" id="progress" aria-hidden="true"></div>
     <div class="controls">
-      <button class="iconbtn" id="capBtn" aria-pressed="true" aria-label="Show or hide captions"><svg class="i"><use href="#i-captions"/></svg></button>
-      <button class="iconbtn" id="pauseBtn" aria-label="Pause the story"><svg class="i"><use href="#i-pause"/></svg></button>
+      <button class="iconbtn" id="capBtn" aria-pressed="true" aria-label="Hide captions" data-tip="Hide captions"><svg class="i"><use href="#i-captions"/></svg></button>
+      <button class="iconbtn" id="pauseBtn" aria-label="Pause story" data-tip="Pause story (Esc)"><svg class="i"><use href="#i-pause"/></svg></button>
     </div>
     <div id="chipLayer"></div>
     <p class="caption" id="caption" aria-live="polite"></p>
@@ -267,6 +296,7 @@ svg.i{width:24px;height:24px;flex:none;fill:none;stroke:currentColor;stroke-widt
       <p class="small dim" id="sWho"></p>
       <h2 class="display" id="sName"></h2>
       <div class="info"><p class="small dim">Meaning</p><p class="body" id="sMeaning"></p></div>
+      <div class="today" id="sToday" hidden><div class="h"><svg class="i"><use href="#i-sun"/></svg><p class="label">Try it today</p></div><p class="body" id="sTry"></p></div>
       <div class="prompt">
         <div class="h"><svg class="i"><use href="#i-users"/></svg><p class="label">Try it together</p></div>
         <div class="step"><span class="num">1</span>Get their attention first.</div>
@@ -278,22 +308,20 @@ svg.i{width:24px;height:24px;flex:none;fill:none;stroke:currentColor;stroke-widt
   </section>
 
   <section class="screen" id="end" aria-label="End of story">
-    <div style="position:absolute;left:var(--frame);top:var(--frame);width:400px;display:flex;flex-direction:column;gap:var(--s4)">
-      <h2 class="display">The end</h2>
-      <p class="body">Some moments are too much. It is alright to say so.</p>
-      <div class="today"><div class="h"><svg class="i"><use href="#i-sun"/></svg><p class="label">Try one today</p></div><p class="body">Pick one sign and use it at a calm moment, like bath time or a car journey.</p></div>
-    </div>
-    <div style="position:absolute;left:var(--frame);bottom:var(--frame);display:flex;flex-direction:column;gap:var(--s4);align-items:flex-start">
+    <header class="h-top">
+      <div><h2 class="display">The end</h2><p class="body muted">Some moments are too much. It is alright to say so.</p></div>
+      <div class="buddy end"><img class="avatar" src="img/av-parent.jpg" alt=""><p class="bubble small"><b>Try one today.</b> Pick a calm moment, like bath time or a car journey.</p></div>
+    </header>
+    <div class="tiles" id="trail" aria-label="The signs from this story, in order"></div>
+    <div class="end-actions">
       <button class="btn save" id="saveAll"></button>
-      <button class="btn primary" data-go="scrapbook" data-from="end"><svg class="i"><use href="#i-right"/></svg>Go to Scrapbook</button>
-      <button class="btn secondary" data-go="home"><svg class="i"><use href="#i-house"/></svg>Back to home</button>
+      <div class="row"><button class="btn secondary" data-go="home"><svg class="i"><use href="#i-house"/></svg>Go home</button><button class="btn primary" data-go="scrapbook" data-from="end"><svg class="i"><use href="#i-right"/></svg>Go to Scrapbook</button></div>
     </div>
-    <div class="list" id="endList" aria-label="What each sign changed"></div>
   </section>
 
   <section class="screen" id="scrapbook" aria-label="Scrapbook">
     <header class="h-top"><div><h2 class="display">Your Scrapbook</h2><p class="body muted">The party · signs you saved, in story order</p></div>
-      <button class="btn secondary" data-go="home"><svg class="i"><use href="#i-house"/></svg>Home</button></header>
+      <button class="btn secondary" data-go="home"><svg class="i"><use href="#i-house"/></svg>Go home</button></header>
     <div class="cards" id="cards"></div>
     <div class="empty" id="emptySb" hidden>
       <h3 class="heading">No signs saved yet</h3>
@@ -318,7 +346,7 @@ svg.i{width:24px;height:24px;flex:none;fill:none;stroke:currentColor;stroke-widt
       <div class="row"><span class="ic"><svg class="i"><use href="#i-book"/></svg></span><p class="body">Read the story together. Tap the edge of the screen to turn the page.</p></div>
       <div class="row"><span class="ic"><svg class="i"><use href="#i-hand"/></svg></span><p class="body">When a sign appears, tap it to watch it and try it with your child.</p></div>
       <div class="row"><span class="ic"><svg class="i"><use href="#i-bookmark"/></svg></span><p class="body">Save the signs you like. They stay in your Scrapbook.</p></div>
-      <div class="row-btns"><button class="btn primary" id="coachOk">Got it</button></div>
+      <div class="row-btns"><button class="btn primary" id="coachOk">Start reading</button></div>
     </div>
   </div>
   <div class="toast" id="toast" role="status"></div>
@@ -345,6 +373,10 @@ svg.i{width:24px;height:24px;flex:none;fill:none;stroke:currentColor;stroke-widt
 
 <script>
 const reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
+let lastFocus=null;
+function openDialog(id,first){lastFocus=document.activeElement;$(id).classList.add("on");setTimeout(()=>$(first).focus(),30);}
+function closeDialog(id,noRestore){$(id).classList.remove("on");if(!noRestore&&lastFocus&&lastFocus!==document.body&&lastFocus.offsetParent)lastFocus.focus();lastFocus=null;}
+addEventListener("keydown",e=>{if(e.key!=="Tab")return;const d=document.querySelector(".scrim.on");if(!d)return;const f=[...d.querySelectorAll("button")];const i=f.indexOf(document.activeElement);if(e.shiftKey&&(i<=0)){e.preventDefault();f[f.length-1].focus();}else if(!e.shiftKey&&(i===f.length-1||i<0)){e.preventDefault();f[0].focus();}});
 const TBC = "Waiting for the BSL specialist’s description.";
 const PAGES = [
   {img:"p01", cap:"So many people. So much noise. So much happening."},
@@ -406,7 +438,7 @@ function leafTurn(dir, oldSrc, newSrc){
     sh.animate([{opacity:1},{opacity:0}],opt);
   }
 }
-function setCaption(t){const c=$("caption");c.setAttribute("aria-label",t);c.innerHTML=t.split(" ").map((w,i)=>`<span class="w" aria-hidden="true" style="animation-delay:${.25+i*.035}s">${w}</span>`).join(" ");}
+function setCaption(t){const c=$("caption");c.setAttribute("aria-label",t);c.innerHTML=t.split(" ").map((w,i)=>`<span class="w" aria-hidden="true" style="animation-delay:${.2+i*.03}s">${w}</span>`).join(" ");}
 function renderPage(instant, dir, oldSrc){
   const p=PAGES[S.page], after=p.sign&&S.done.has(S.page);
   const src=`img/${after?p.after:p.img}.jpg`;
@@ -429,34 +461,36 @@ function turn(d){
 }
 function flip(btn,d){ if(btn.classList.contains("turning"))return; if(reduce){turn(d);return;} btn.classList.add("turning"); setTimeout(()=>{turn(d);btn.classList.remove("turning");},240); }
 $("fwdEdge").onclick=e=>flip(e.currentTarget,1); $("backEdge").onclick=e=>flip(e.currentTarget,-1);
-$("capBtn").onclick=e=>{S.captions=!S.captions;e.currentTarget.setAttribute("aria-pressed",S.captions);$("caption").classList.toggle("off",!S.captions);};
-$("pauseBtn").onclick=()=>{$("pause").classList.add("on");$("keepReading").focus();};
-$("keepReading").onclick=()=>$("pause").classList.remove("on");
-$("pause").onclick=e=>{if(e.target.id==="pause")$("pause").classList.remove("on");};
-$("goStart").onclick=()=>{$("pause").classList.remove("on");S.page=0;S.done.clear();S.status="new";show("home");};
+$("capBtn").onclick=e=>{S.captions=!S.captions;const cb=e.currentTarget;cb.setAttribute("aria-pressed",S.captions);const l=S.captions?"Hide captions":"Show captions";cb.setAttribute("aria-label",l);cb.dataset.tip=l;$("caption").classList.toggle("off",!S.captions);};
+$("pauseBtn").onclick=()=>openDialog("pause","keepReading");
+$("keepReading").onclick=()=>closeDialog("pause");
+$("pause").onclick=e=>{if(e.target.id==="pause")closeDialog("pause");};
+$("goStart").onclick=()=>{closeDialog("pause",true);S.page=0;S.done.clear();S.status="new";show("home");};
 
 function openSign(i, from){
   S.signIdx=i; S.signFrom=from; const s=SIGNS[i], p=PAGES[s.page];
   $("signBg").src=`img/${p.img}.jpg`;
   $("sWho").textContent=s.who; $("sName").textContent=s.name; $("sMeaning").textContent=s.meaning; 
-  $("contBtn").innerHTML = from==="story" ? ico("right")+"Continue story" : ico("left")+"Back to Scrapbook";
-  renderSave(); stopVideo(); show("sign"); setTimeout(()=>playVideo(),500);
+  $("contBtn").innerHTML = from==="story" ? ico("right")+"Continue story" : ico("left")+"Return to Scrapbook";
+  $("sToday").hidden=from==="story"; $("sTry").textContent=s.tryIt; renderSave(); stopVideo(); show("sign"); setTimeout(()=>playVideo(),500);
 }
 function renderSave(){const on=S.saved.has(S.signIdx);const b=$("saveBtn");b.className="btn "+(on?"saved":"save");b.innerHTML=on?ico("check")+"Saved":ico("bookmark")+"Save to Scrapbook";b.setAttribute("aria-pressed",on);}
 $("saveBtn").onclick=()=>{const i=S.signIdx; if(S.saved.has(i)){S.saved.delete(i);toast("Removed from your Scrapbook");}else{S.saved.add(i);toast("Saved to your Scrapbook");} renderSave(); const sb=$("saveBtn"); sb.classList.remove("pop"); void sb.offsetWidth; sb.classList.add("pop");};
 $("contBtn").onclick=()=>{ if(S.signFrom==="story"){ S.done.add(SIGNS[S.signIdx].page); renderPage(true); show("reader"); } else show("scrapbook"); };
 let speed="normal", vidT;
-function stopVideo(){clearTimeout(vidT);const pl=$("player");pl.classList.remove("playing");$("bar").style.width="0";}
-function playVideo(){stopVideo();const pl=$("player"),dur=speed==="slow"?6:3;pl.style.setProperty("--dur",dur+"s");void pl.offsetWidth;pl.classList.add("playing");$("bar").style.width="100%";vidT=setTimeout(()=>{},dur*1000);}
+function stopVideo(){clearTimeout(vidT);const pl=$("player");pl.classList.remove("playing");}
+function playVideo(){stopVideo();const pl=$("player"),dur=speed==="slow"?6:3;pl.style.setProperty("--dur",dur+"s");void pl.offsetWidth;pl.classList.add("playing");vidT=setTimeout(()=>{},dur*1000);}
 $("playBtn").onclick=playVideo;
 document.querySelectorAll(".spd").forEach(b=>b.onclick=()=>{speed=b.dataset.speed;document.querySelectorAll(".spd").forEach(x=>x.setAttribute("aria-pressed",x===b));playVideo();});
 
 function renderEnd(){
-  const L=$("endList"); L.innerHTML="";
-  SIGNS.forEach((s,i)=>{const on=S.saved.has(i);const r=document.createElement("div");r.className="item";
-    r.innerHTML=`<img class="thumb" src="img/${PAGES[s.page].after}.jpg" alt=""><div class="t"><p class="label">${s.name}</p><p class="small muted">${s.changed}</p></div>`;
-    const b=document.createElement("button");b.className="btn sm "+(on?"saved":"save");b.innerHTML=on?ico("check")+"Saved":ico("bookmark")+"Save";b.setAttribute("aria-label",(on?"Saved: ":"Save ")+s.name);
-    b.onclick=()=>{on?S.saved.delete(i):S.saved.add(i);renderEnd();const nb=$("endList").children[i].querySelector(".btn");nb.classList.add("pop");};r.appendChild(b);L.appendChild(r);});
+  const T=$("trail"); T.innerHTML="";
+  SIGNS.forEach((s,i)=>{const on=S.saved.has(i);
+    const t=document.createElement("div"); t.className="tile"+(on?" saved":""); t.style.animationDelay=(i*.03)+"s";
+    t.innerHTML=`<img src="img/${PAGES[s.page].after}.jpg" alt="${s.changed}"><span class="n">${i+1}</span><p class="name">${s.name}</p>`;
+    const b=document.createElement("button"); b.className="btn "+(on?"saved":"save"); b.innerHTML=on?ico("check")+"Saved":ico("bookmark")+"Save"; b.setAttribute("aria-label",(on?"Remove "+s.name+" from Scrapbook":"Save "+s.name+" to Scrapbook")); b.setAttribute("aria-pressed",on);
+    b.onclick=()=>{on?S.saved.delete(i):S.saved.add(i);renderEnd();const nb=T.children[i].querySelector(".btn");nb.classList.add("pop");nb.focus();};
+    t.appendChild(b); T.appendChild(t);});
   const all=S.saved.size===SIGNS.length,a=$("saveAll");a.className="btn "+(all?"saved":"save");a.innerHTML=all?ico("check")+"All six saved":ico("bookmark")+"Save all six";
 }
 $("saveAll").onclick=()=>{if(S.saved.size===SIGNS.length)S.saved.clear();else SIGNS.forEach((_,i)=>S.saved.add(i));renderEnd();};
@@ -465,13 +499,13 @@ function renderScrapbook(){
   const C=$("cards"); C.innerHTML=""; const ids=[...S.saved].sort((a,b)=>a-b);
   $("emptySb").hidden=ids.length>0;
   const rot=[-2,1.5,-1,2,-1.5,1];
-  ids.forEach((i,k)=>{const s=SIGNS[i];const c=document.createElement("button");c.className="card";c.style.rotate=`${rot[k%6]}deg`; c.style.animationDelay=`${.08+k*.1}s`;
-    c.innerHTML=`<span class="tape"></span><div class="img"><img src="img/${PAGES[s.page].after}.jpg" alt=""></div><p class="heading">${s.name}</p><p class="small muted">${s.who}</p><p class="try"><b>Try it:</b> ${s.tryIt}</p>`;
-    c.setAttribute("aria-label","Open "+s.name);c.onclick=()=>openSign(i,"scrapbook");c.querySelector(".tape").style.animationDelay=`${.45+k*.1}s`; C.appendChild(c);});
+  ids.forEach((i,k)=>{const s=SIGNS[i];const c=document.createElement("button");c.className="card";c.style.rotate=`${rot[k%6]}deg`; c.style.animationDelay=`${k*.03}s`;
+    c.innerHTML=`<span class="tape"></span><div class="img"><img src="img/${PAGES[s.page].after}.jpg" alt=""></div><p class="heading">${s.name}</p><p class="small muted">${s.who}</p>`;
+    c.setAttribute("aria-label","Open "+s.name);c.onclick=()=>openSign(i,"scrapbook");c.querySelector(".tape").style.animationDelay=`${.3+k*.03}s`; C.appendChild(c);});
 }
 $("book1").onclick=()=>$("storyBtn").click();
-function openCoach(){$("coach").classList.add("on");$("coachOk").focus();}
-function closeCoach(){$("coach").classList.remove("on");try{localStorage.setItem("st-coach","1")}catch(e){}}
+function openCoach(){openDialog("coach","coachOk");}
+function closeCoach(){closeDialog("coach");try{localStorage.setItem("st-coach","1")}catch(e){}}
 $("howBtn").onclick=openCoach; $("coachOk").onclick=closeCoach; $("coach").onclick=e=>{if(e.target.id==="coach")closeCoach();};
 let seen=false; try{seen=localStorage.getItem("st-coach")==="1"}catch(e){}
 if(!seen) setTimeout(openCoach,600);
@@ -480,7 +514,7 @@ document.querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>show(b.dataset.g
 
 addEventListener("keydown",e=>{
   if(e.key==="Escape"&&$("coach").classList.contains("on")){closeCoach();return;}
-  if(!$("reader").classList.contains("on")||$("pause").classList.contains("on")){ if(e.key==="Escape")$("pause").classList.remove("on"); return; }
+  if(!$("reader").classList.contains("on")||$("pause").classList.contains("on")){ if(e.key==="Escape"&&$("pause").classList.contains("on"))closeDialog("pause"); return; }
   if(e.key==="ArrowRight")flip($("fwdEdge"),1); if(e.key==="ArrowLeft"&&!$("backEdge").hidden)flip($("backEdge"),-1); if(e.key==="Escape")$("pauseBtn").click();
 });
 renderHome();
