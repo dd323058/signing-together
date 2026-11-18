@@ -74,4 +74,20 @@
   --button-primary-fg:var(--color-text-on-primary);
   --button-primary-edge:0 var(--elevation-edge) 0 var(--color-primary-edge);
   --button-radius:var(--radius-button);
+
+  /* ---------- 4. Prototype values (not in the Figma node yet: check against the library before relying on them) ---------- */
+  --color-primary-pressed:#8F3819;
+  --color-secondary-pressed:#33584A;
+  --color-surface-pressed:#EFE4CF;
+  --color-surface-edge:#B5A487;
+  --color-sign-tint:#DCE8E1;
+  --color-sign-tint-pressed:#C6D9CD;
+  --color-accent:#E6B13A;
+  --color-stage:#1F1B1A;
+  --color-backdrop:#2A2321;
+  --color-text-on-stage-muted:#D9CCB4;
+  --color-book-4:#5A4A44;
+  --color-control-edge:#8C7B68;   /* 3:1 against the surface (WCAG 1.4.11) for borders that identify a control */
+
+  --space-12:12px; --space-32:32px; --space-48:48px; --space-64:64px;
 }

@@ -17,17 +17,19 @@
   --secondary:var(--color-secondary);--secondary-edge:var(--color-secondary-edge);
   --slot:var(--color-slot);
   --r-card:var(--radius-card);--r-btn:var(--radius-button);--r-sm:var(--radius-small);
-  /* Not in the Figma Story card node yet: prototype values */
-  --primary-pressed:#8F3819;--secondary-pressed:#33584A;
-  --surface-pressed:#EFE4CF;--surface-edge:#B5A487;
-  --sign-tint:#DCE8E1;--sign-tint-pressed:#C6D9CD;
-  --accent:#E6B13A;--stage:#1F1B1A;
+  /* Prototype values, defined in tokens.css section 4 */
+  --primary-pressed:var(--color-primary-pressed);--secondary-pressed:var(--color-secondary-pressed);
+  --surface-pressed:var(--color-surface-pressed);--surface-edge:var(--color-surface-edge);
+  --sign-tint:var(--color-sign-tint);--sign-tint-pressed:var(--color-sign-tint-pressed);
+  --accent:var(--color-accent);--stage:var(--color-stage);
+  --control-edge:var(--color-control-edge);
   --ease:cubic-bezier(.2,.7,.3,1);
-  --s1:4px;--s2:8px;--s3:12px;--s4:16px;--s6:24px;--s8:32px;--s10:40px;--s12:48px;--s16:64px;
+  /* Spacing: one scale, from tokens.css */
+  --s1:var(--space-xs);--s2:var(--space-sm);--s3:var(--space-12);--s4:var(--space-md);--s6:var(--space-lg);--s8:var(--space-32);--s10:var(--space-xl);--s12:var(--space-48);--s16:var(--space-64);
   --frame:var(--s16);--chrome:var(--s8);--section:var(--s12);
 }
 *{box-sizing:border-box;margin:0;padding:0}
-html,body{height:100%;background:#2a2321;font-family:"Atkinson Hyperlegible Next",system-ui,sans-serif;color:var(--ink);-webkit-tap-highlight-color:transparent}
+html,body{height:100%;background:var(--color-backdrop);font-family:"Atkinson Hyperlegible Next",system-ui,sans-serif;color:var(--ink);-webkit-tap-highlight-color:transparent}
 body{display:grid;place-items:center;overflow:hidden}
 #stage{width:1194px;height:834px;position:relative;overflow:hidden;border-radius:28px;background:var(--bg);transform-origin:center;flex:none;box-shadow:0 20px 60px rgba(0,0,0,.35)}
 .screen{position:absolute;inset:0;opacity:0;pointer-events:none;transition:opacity .3s ease-out}
@@ -48,7 +50,7 @@ svg.i{width:24px;height:24px;flex:none;fill:none;stroke:currentColor;stroke-widt
 .btn:active,.btn.pressed{transform:translateY(3px);box-shadow:0 1px 0 var(--edge)}
 .btn.primary{background:var(--primary);color:var(--surface);--edge:var(--primary-edge)}
 .btn.primary:active{background:var(--primary-pressed)}
-.btn.secondary{background:var(--surface);border:2px solid var(--line);--edge:var(--surface-edge)}
+.btn.secondary{background:var(--surface);border:2px solid var(--control-edge);--edge:var(--surface-edge)}
 .btn.secondary:active{background:var(--surface-pressed)}
 .btn.save{background:var(--sign-tint);border:2px solid var(--secondary);--edge:var(--secondary-edge)}
 .btn.save:active{background:var(--sign-tint-pressed)}
@@ -56,7 +58,9 @@ svg.i{width:24px;height:24px;flex:none;fill:none;stroke:currentColor;stroke-widt
 .btn.saved:active{background:var(--secondary-pressed)}
 .btn.full{width:100%}
 .btn.sm{min-height:64px;min-width:0;padding:12px 24px}
-.iconbtn{width:80px;height:80px;border-radius:999px;background:var(--surface);border:2px solid var(--line);display:grid;place-items:center;box-shadow:0 4px 0 var(--surface-edge);transition:transform .15s ease-out,box-shadow .15s ease-out,background .15s ease-out}
+#restartBtn[hidden]{display:none}
+.iconbtn.labelled{width:auto;display:inline-flex;align-items:center;justify-content:center;gap:var(--s3);padding:0 20px;font-size:26px;line-height:32px;font-weight:600;white-space:nowrap}
+.iconbtn{width:80px;height:80px;border-radius:999px;background:var(--surface);border:2px solid var(--control-edge);display:grid;place-items:center;box-shadow:0 4px 0 var(--surface-edge);transition:transform .15s ease-out,box-shadow .15s ease-out,background .15s ease-out}
 .iconbtn:active{transform:translateY(3px);box-shadow:0 1px 0 var(--surface-edge);background:var(--surface-pressed)}
 .iconbtn[aria-pressed="false"]{background:var(--slot)}
 [data-tip]{position:relative}
@@ -79,21 +83,21 @@ svg.i{width:24px;height:24px;flex:none;fill:none;stroke:currentColor;stroke-widt
 .edge:hover .fold,.edge:active .fold,.edge:focus-visible .fold{--f:88}
 .edge.turning .fold{--f:260;transition-duration:.3s}
 .fold .under{position:absolute;inset:0;clip-path:polygon(100% 0,100% 100%,0 100%);background:linear-gradient(135deg,#B29F7D 50%,#CFBB99 61%,#E9DBBE 85%,#F5EBD5 100%)}
-.fold .flap{position:absolute;inset:0;filter:drop-shadow(-6px -6px 14px rgba(58,42,38,.22))}
+.fold .flap{position:absolute;inset:0;filter:drop-shadow(-6px -6px 14px color-mix(in srgb,var(--ink) 22%,transparent))}
 .fold .flap i{position:absolute;inset:0;clip-path:polygon(0 0,100% 0,0 100%);border-top-left-radius:5px;background:linear-gradient(135deg,#FFFDF5 0%,#F9F4E4 21%,#E5DBC2 39%,#BCAD90 50%)}
 .chip{position:absolute;display:inline-flex;align-items:center;gap:12px;height:64px;padding:0 24px;background:var(--sign-tint);border:2px solid var(--secondary);border-radius:999px;font-size:26px;font-weight:600;box-shadow:0 4px 0 var(--secondary-edge);transition:transform .15s ease-out,box-shadow .15s ease-out,background .15s ease-out,opacity .5s}
 .chip:active{transform:translateY(3px);box-shadow:0 1px 0 var(--secondary-edge);background:var(--sign-tint-pressed)}
 
 #sign{background:var(--stage)}
 #sign .bgscene{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-#sign .overlay{position:absolute;inset:0;background:rgba(31,27,26,.72)}
+#sign .overlay{position:absolute;inset:0;background:color-mix(in srgb,var(--stage) 72%,transparent)}
 .player{width:560px;height:520px;border-radius:var(--r-card);background:var(--slot);position:relative;overflow:hidden;display:grid;place-items:center}
 .ph{display:flex;flex-direction:column;align-items:center;gap:16px;color:var(--muted);text-align:center}
 .ph svg.i{width:64px;height:64px;stroke-width:1.5}
 .player.playing .bar{transform:scaleX(1)}
 .bar{position:absolute;left:0;bottom:0;height:8px;width:100%;transform-origin:0 50%;transform:scaleX(0);background:var(--primary)}
 .player.playing .bar{transition:transform var(--dur,3s) linear}
-.spd{display:inline-flex;align-items:center;gap:12px;height:72px;padding:0 24px;border-radius:var(--r-btn);background:var(--surface);border:2px solid var(--line);font-size:26px;font-weight:600;box-shadow:0 4px 0 var(--surface-edge);transition:transform .15s ease-out,box-shadow .15s ease-out,background .15s ease-out}
+.spd{display:inline-flex;align-items:center;gap:12px;height:72px;padding:0 24px;border-radius:var(--r-btn);background:var(--surface);border:2px solid var(--control-edge);font-size:26px;font-weight:600;box-shadow:0 4px 0 var(--surface-edge);transition:transform .15s ease-out,box-shadow .15s ease-out,background .15s ease-out}
 .spd:active{transform:translateY(3px);box-shadow:0 1px 0 var(--surface-edge);background:var(--surface-pressed)}
 .spd[aria-pressed="true"]{background:var(--sign-tint);border-color:var(--secondary);box-shadow:0 4px 0 var(--secondary-edge)}
 .info{display:flex;flex-direction:column;gap:4px}
@@ -103,7 +107,7 @@ svg.i{width:24px;height:24px;flex:none;fill:none;stroke:currentColor;stroke-widt
 .s-controls .spd{flex:1 1 auto;justify-content:center;padding:0 var(--s4);white-space:nowrap;font-size:24px}
 .s-watch .btn.save{width:100%}
 .s-learn{position:absolute;left:calc(var(--frame) + 560px + var(--section));right:var(--frame);top:var(--frame);display:flex;flex-direction:column;gap:var(--s4);color:var(--surface)}
-.s-learn .dim{color:#D9CCB4}
+.s-learn .dim{color:var(--color-text-on-stage-muted)}
 .s-learn .prompt,.s-learn .today{color:var(--ink);margin-top:var(--s2)}
 .today[hidden]{display:none}
 .s-next{position:absolute;right:var(--frame);bottom:var(--frame)}
@@ -127,9 +131,9 @@ svg.i{width:24px;height:24px;flex:none;fill:none;stroke:currentColor;stroke-widt
 .card .try{font-size:20px;line-height:30px;border-top:2px dashed var(--line);padding-top:12px}
 .item .t{flex:1}
 .cards{position:absolute;left:var(--frame);top:208px;right:var(--frame);display:grid;grid-template-columns:repeat(3,320px);gap:var(--s8)}
-.card{position:relative;background:var(--surface);border:2px solid var(--line);border-radius:var(--r-card);padding:24px;display:flex;flex-direction:column;gap:12px;text-align:left;box-shadow:0 4px 16px rgba(58,42,38,.06);transition:transform .2s var(--ease)}
+.card{position:relative;background:var(--surface);border:2px solid var(--control-edge);border-radius:var(--r-card);padding:24px;display:flex;flex-direction:column;gap:12px;text-align:left;box-shadow:0 4px 16px color-mix(in srgb,var(--ink) 6%,transparent);transition:transform .2s var(--ease)}
 .card:active{scale:.98}
-.card .tape{position:absolute;top:-12px;left:50%;width:96px;height:28px;margin-left:-48px;background:rgba(230,177,58,.8);transform:rotate(-4deg)}
+.card .tape{position:absolute;top:-12px;left:50%;width:96px;height:28px;margin-left:-48px;background:color-mix(in srgb,var(--accent) 80%,transparent);transform:rotate(-4deg)}
 .card .img{height:120px;flex:none;border-radius:var(--r-sm);background:var(--slot);display:grid;place-items:center;color:var(--muted)}
 .empty[hidden],#readProg[hidden]{display:none!important}
 .empty{position:absolute;left:var(--frame);top:208px;width:560px;display:flex;flex-direction:column;gap:16px}
@@ -151,7 +155,7 @@ svg.i{width:24px;height:24px;flex:none;fill:none;stroke:currentColor;stroke-widt
 #reader{perspective:2600px}
 #leaf{position:absolute;inset:0;display:none;transform-origin:left center;backface-visibility:hidden;will-change:transform}
 #leaf img{width:100%;height:100%;object-fit:cover;display:block}
-#leaf .shade{position:absolute;inset:0;background:linear-gradient(90deg,rgba(58,42,38,0) 40%,rgba(58,42,38,.45) 100%);opacity:0}
+#leaf .shade{position:absolute;inset:0;background:linear-gradient(90deg,color-mix(in srgb,var(--ink) 0%,transparent) 40%,color-mix(in srgb,var(--ink) 45%,transparent) 100%);opacity:0}
 .caption .w{display:inline-block;animation:rise .3s ease-out both}
 @keyframes rise{from{opacity:0;translate:0 8px}to{opacity:1;translate:0 0}}
 .chip{animation:chipIn .3s ease-out .3s both}
@@ -182,7 +186,7 @@ svg.i{width:24px;height:24px;flex:none;fill:none;stroke:currentColor;stroke-widt
 
 .scrim.on .dialog{animation:popIn .2s ease-out both}
 
-.scrim{position:absolute;inset:0;background:rgba(31,27,26,.6);display:grid;place-items:center;opacity:0;pointer-events:none;transition:opacity .2s ease-out;z-index:50}
+.scrim{position:absolute;inset:0;background:color-mix(in srgb,var(--stage) 60%,transparent);display:grid;place-items:center;opacity:0;pointer-events:none;transition:opacity .2s ease-out;z-index:50}
 .scrim.on{opacity:1;pointer-events:auto}
 .dialog{width:560px;background:var(--surface);border-radius:var(--r-card);padding:var(--s10);display:flex;flex-direction:column;gap:var(--s4)}
 .row-btns{display:flex;gap:16px;margin-top:8px}
@@ -192,7 +196,7 @@ svg.i{width:24px;height:24px;flex:none;fill:none;stroke:currentColor;stroke-widt
 .floor{position:absolute;left:0;right:0;top:738px;bottom:0;background:var(--surface-pressed)}
 .plank{position:absolute;left:0;right:0;top:738px;height:16px;background:#C9A57A;box-shadow:0 6px 0 #9C7A52}
 .fbook{position:absolute;left:var(--frame);bottom:96px;width:400px;height:500px}
-.fpages{position:absolute;left:12px;top:8px;right:-10px;bottom:0;border-radius:8px 22px 22px 8px;background:repeating-linear-gradient(180deg,#FFFBF2 0 3px,#DCCFB4 3px 4px)}
+.fpages{position:absolute;left:12px;top:8px;right:-10px;bottom:0;border-radius:8px 22px 22px 8px;background:repeating-linear-gradient(180deg,var(--surface) 0 3px,#DCCFB4 3px 4px)}
 .fcover{position:absolute;inset:0;display:flex;flex-direction:column;border-radius:8px 20px 20px 8px;overflow:hidden;background:var(--surface);border:3px solid var(--secondary)}
 .fart{flex:1;min-height:0;display:block;padding:0}
 .fart img{width:100%;height:100%;object-fit:cover;object-position:18% 50%;display:block}
@@ -200,12 +204,12 @@ svg.i{width:24px;height:24px;flex:none;fill:none;stroke:currentColor;stroke-widt
 .fspine{position:absolute;left:0;top:0;bottom:0;width:20px;background:var(--secondary);box-shadow:inset -4px 0 0 var(--secondary-edge)}
 .fbook .badge{left:auto;right:-12px;top:20px;rotate:4deg}
 .sbook{position:absolute;bottom:96px;width:184px;border-radius:6px 16px 16px 6px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:var(--s2);color:var(--surface);text-align:center;box-shadow:inset 14px 0 0 rgba(0,0,0,.14)}
-.sbook::before{content:"";position:absolute;left:26px;top:12px;right:12px;bottom:12px;border:2px solid rgba(255,251,242,.45);border-radius:4px 10px 10px 4px}
+.sbook::before{content:"";position:absolute;left:26px;top:12px;right:12px;bottom:12px;border:2px solid color-mix(in srgb,var(--surface) 45%,transparent);border-radius:4px 10px 10px 4px}
 .sbook svg.i{width:40px;height:40px;stroke-width:1.5}
 .sbook .small{opacity:.9}
-.sbook.c2{left:512px;height:290px;background:#3F6B5A}
-.sbook.c3{left:720px;height:262px;background:#8F3819}
-.sbook.c4{left:928px;height:304px;background:#5A4A44}
+.sbook.c2{left:512px;height:290px;background:var(--secondary)}
+.sbook.c3{left:720px;height:262px;background:var(--primary-pressed)}
+.sbook.c4{left:928px;height:304px;background:var(--color-book-4)}
 .buddy{display:flex;align-items:center;gap:var(--s6)}
 .avatar{width:120px;height:120px;border-radius:999px;object-fit:cover;border:4px solid var(--surface);box-shadow:0 4px 0 var(--surface-edge);flex:none}
 .bubble{position:relative;background:var(--surface);border:2px solid var(--line);border-radius:var(--r-card);padding:var(--s4) var(--s6);color:var(--ink)}
@@ -230,7 +234,7 @@ svg.i{width:24px;height:24px;flex:none;fill:none;stroke:currentColor;stroke-widt
 </style>
 </head>
 <body>
-<div id="stage" role="application" aria-label="Signing Together prototype">
+<div id="stage" role="region" aria-label="Signing Together prototype">
 
   <section class="screen on" id="home" aria-label="Home">
     <header class="h-top">
@@ -251,6 +255,7 @@ svg.i{width:24px;height:24px;flex:none;fill:none;stroke:currentColor;stroke-widt
           <p class="small muted desc">Story 01 · 2 minutes · 6 signs</p>
           <div id="readProg" hidden><div class="track"><span id="readBar"></span></div><p class="small muted" id="readTxt"></p></div>
           <button class="btn primary full" id="storyBtn"><svg class="i"><use href="#i-book"/></svg><span>Read the story</span></button>
+          <button class="btn secondary sm full" id="restartBtn" hidden><svg class="i"><use href="#i-rotate"/></svg><span>Start from the beginning</span></button>
         </div>
         <span class="fspine" aria-hidden="true"></span>
       </div>
@@ -268,8 +273,8 @@ svg.i{width:24px;height:24px;flex:none;fill:none;stroke:currentColor;stroke-widt
     <div id="leaf" aria-hidden="true"><img alt=""><span class="shade"></span></div>
     <div class="progress" id="progress" aria-hidden="true"></div>
     <div class="controls">
-      <button class="iconbtn" id="capBtn" aria-pressed="true" aria-label="Hide captions" data-tip="Hide captions"><svg class="i"><use href="#i-captions"/></svg></button>
-      <button class="iconbtn" id="pauseBtn" aria-label="Pause story" data-tip="Pause story (Esc)"><svg class="i"><use href="#i-pause"/></svg></button>
+      <button class="iconbtn labelled" id="capBtn" aria-pressed="true" aria-label="Hide captions" data-tip="Hide captions"><svg class="i"><use href="#i-captions"/></svg><span>Captions</span></button>
+      <button class="iconbtn labelled" id="pauseBtn" aria-label="Pause story" data-tip="Pause story (Esc)"><svg class="i"><use href="#i-pause"/></svg><span>Pause</span></button>
     </div>
     <div id="chipLayer"></div>
     <p class="caption" id="caption" aria-live="polite"></p>
@@ -333,10 +338,11 @@ svg.i{width:24px;height:24px;flex:none;fill:none;stroke:currentColor;stroke-widt
   <div class="scrim" id="pause" role="dialog" aria-modal="true" aria-labelledby="pzT">
     <div class="dialog">
       <h2 class="title" id="pzT">Story paused</h2>
-      <p class="body">Pick up where you left off, or go back to the start. Going to the start loses your place.</p>
-      <div class="row-btns">
-        <button class="btn primary" id="keepReading">Keep reading</button>
-        <button class="btn secondary" id="goStart"><svg class="i"><use href="#i-house"/></svg>Go to start</button>
+      <p class="body">Pick up where you left off, or go home. Your place is saved. Starting over loses it.</p>
+      <button class="btn primary full" id="keepReading">Keep reading</button>
+      <div class="row-btns" style="margin-top:0">
+        <button class="btn secondary" id="goHome"><svg class="i"><use href="#i-house"/></svg>Go home</button>
+        <button class="btn secondary" id="goStart"><svg class="i"><use href="#i-rotate"/></svg>Start over</button>
       </div>
     </div>
   </div>
@@ -354,6 +360,7 @@ svg.i{width:24px;height:24px;flex:none;fill:none;stroke:currentColor;stroke-widt
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <symbol id="i-captions" viewBox="0 0 24 24"><rect width="18" height="14" x="3" y="5" rx="2"/><path d="M7 15h4M15 15h2M7 11h2M13 11h4"/></symbol>
+  <symbol id="i-captions-off" viewBox="0 0 24 24"><rect width="18" height="14" x="3" y="5" rx="2"/><path d="M7 15h4M15 15h2M7 11h2M13 11h4"/><path d="M3 3l18 18" stroke-width="2.5"/></symbol>
   <symbol id="i-pause" viewBox="0 0 24 24"><rect x="14" y="3" width="5" height="18" rx="1"/><rect x="5" y="3" width="5" height="18" rx="1"/></symbol>
   <symbol id="i-play" viewBox="0 0 24 24"><path d="M5 5a2 2 0 0 1 3.008-1.728l11.997 6.998a2 2 0 0 1 .003 3.458l-12 7A2 2 0 0 1 5 19z"/></symbol>
   <symbol id="i-rotate" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></symbol>
@@ -414,8 +421,10 @@ function renderHome(){
   prog.hidden = S.status!=="progress"; $("storyCard").classList.toggle("progress-on",S.status==="progress");
   if(S.status==="progress"){ $("readBar").style.width=((S.page+1)/8*100)+"%"; $("readTxt").textContent=`Page ${S.page+1} of 8`; }
   $("storyBtn").querySelector("use").setAttribute("href", S.status==="read"?"#i-rotate":S.status==="progress"?"#i-right":"#i-book");
-  b.textContent = S.status==="new"?"Read the story":S.status==="progress"?"Continue reading":"Read again";
+  b.textContent = S.status==="new"?"Read the story":S.status==="progress"?"Continue story":"Read again";
+  $("restartBtn").hidden = S.status!=="progress";
 }
+$("restartBtn").onclick=()=>{ S.page=0; S.done.clear(); S.status="progress"; renderPage(true); show("reader"); };
 $("storyBtn").onclick=()=>{ if(S.status!=="progress"){S.page=0;S.done.clear();} S.status="progress"; renderPage(true); show("reader"); };
 
 const dots=$("progress"); for(let i=0;i<8;i++){const d=document.createElement("span");d.className="dot";dots.appendChild(d);}
@@ -461,10 +470,11 @@ function turn(d){
 }
 function flip(btn,d){ if(btn.classList.contains("turning"))return; if(reduce){turn(d);return;} btn.classList.add("turning"); setTimeout(()=>{turn(d);btn.classList.remove("turning");},240); }
 $("fwdEdge").onclick=e=>flip(e.currentTarget,1); $("backEdge").onclick=e=>flip(e.currentTarget,-1);
-$("capBtn").onclick=e=>{S.captions=!S.captions;const cb=e.currentTarget;cb.setAttribute("aria-pressed",S.captions);const l=S.captions?"Hide captions":"Show captions";cb.setAttribute("aria-label",l);cb.dataset.tip=l;$("caption").classList.toggle("off",!S.captions);};
+$("capBtn").onclick=e=>{S.captions=!S.captions;const cb=e.currentTarget;cb.setAttribute("aria-pressed",S.captions);const l=S.captions?"Hide captions":"Show captions";cb.setAttribute("aria-label",l);cb.dataset.tip=l;cb.querySelector("use").setAttribute("href",S.captions?"#i-captions":"#i-captions-off");$("caption").classList.toggle("off",!S.captions);};
 $("pauseBtn").onclick=()=>openDialog("pause","keepReading");
 $("keepReading").onclick=()=>closeDialog("pause");
 $("pause").onclick=e=>{if(e.target.id==="pause")closeDialog("pause");};
+$("goHome").onclick=()=>{closeDialog("pause",true);show("home");};
 $("goStart").onclick=()=>{closeDialog("pause",true);S.page=0;S.done.clear();S.status="new";show("home");};
 
 function openSign(i, from){
